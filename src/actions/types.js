@@ -13,4 +13,5 @@ export const POOL_BUDDIES_RECEIVED = 'pool_buddies_received';
 
 //ActivePools
 export const ACTIVE_POOL_RECEIVED = 'active_pools_received';
+export const DRIVER_TRACKING_RECEIVED = 'driver_tracking_received';
 

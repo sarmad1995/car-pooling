@@ -1,7 +1,11 @@
 import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
-import { Alert } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
+import { URL } from '../config';
+import axios from 'axios';
 
-export const start = () => { 
+export const start = async () => { 
+const token = await AsyncStorage.getItem('userToken');
+const poolId = await AsyncStorage.getItem('poolId');
 BackgroundGeolocation.configure({
     desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
     stationaryRadius: 50,
@@ -16,22 +20,34 @@ BackgroundGeolocation.configure({
     fastestInterval: 5000,
     activitiesInterval: 10000,
     stopOnStillActivity: false,
-    // url: 'http://192.168.81.15:3000/location',
-    // httpHeaders: {
-    //   'X-FOO': 'bar'
-    // },
+    // url: 'http://carpool.iustconnect.com/app/_test.php',
     // // customize post properties
+    // httpHeaders: {
+    //   'Content-Type': 'application/json',
+    // },
+    
     // postTemplate: {
     //   lat: '@latitude',
-    //   lon: '@longitude',
+    //   lng: '@longitude',
     //   foo: 'bar' // you can also add your own properties
     // }
   });
 
-  BackgroundGeolocation.on('location', (location) => {
+  BackgroundGeolocation.on('location', async (location) => {
+    console.log(location);
+    const { data } = await axios.post('http://carpool.iustconnect.com/app/_pools.php', {
+      job: 'updateLastKnownLocation',
+      token,
+      poolId,
+      location: JSON.stringify(location)
+    });
+    console.log('data', data);
     // to perform long running operation on iOS
     // you need to create background task
     BackgroundGeolocation.startTask(taskKey => {
+      // await axios.post(`${URL}/app/_pools.php`, {
+
+      // })
       // execute long running task
       // eg. ajax post location
       // IMPORTANT: task has to be ended by endTask
@@ -39,7 +55,7 @@ BackgroundGeolocation.configure({
     });
   });
 
-  BackgroundGeolocation.on('stationary', (stationaryLocation) => {
+  BackgroundGeolocation.on('stationary', async (stationaryLocation) => {
     // handle stationary locations here
     // Actions.sendLocation(stationaryLocation);
   });

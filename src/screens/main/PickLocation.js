@@ -219,6 +219,7 @@ class PickLocation extends React.Component {
         <View style={{ flex: 1 }}>
   
             <MapView
+                showsUserLocation
                 provider='google'
                 ref={ref => { this.map = ref; }}
                 initialRegion={this.state.region}
@@ -245,7 +246,7 @@ class PickLocation extends React.Component {
             </Button>
 
 
-            <View pointerEvents='box-none' style={{ position: 'absolute', bottom: '52%', left: 0, right: 0, justifyContent: 'center', alignItems: 'center', elevation: 10 }}>
+            <View pointerEvents='box-none' style={{ position: 'absolute', bottom: '50%', left: 0, right: 0, justifyContent: 'center', alignItems: 'center', elevation: 10 }}>
                 <Icon 
                 name='location-on'
                 color={LIGHT}

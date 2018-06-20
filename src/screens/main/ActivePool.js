@@ -37,7 +37,9 @@ class ActivePool extends React.Component {
         } 
         return (
             <View>
-                <RidersActivePool />
+                <RidersActivePool
+                    navigation={this.props.navigation}
+                />
             </View>
         );
     }

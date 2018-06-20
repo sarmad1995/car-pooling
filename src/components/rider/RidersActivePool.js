@@ -21,6 +21,9 @@ class RidersActivePool extends React.Component {
             this.setState({ loading: false });
         });    
     } 
+    onTrackDriver = () => {
+        this.props.navigation.navigate('trackdriver', { pool: this.props.activePool.pool });
+    }
     renderContent = () => {
         if (this.state.loading) {
             return (
@@ -41,9 +44,16 @@ class RidersActivePool extends React.Component {
                 </Card>    
             );
         } return (
-            <ActivePoolOverView
-                pool={this.props.activePool.pool}
-            />
+            <View>
+                <ActivePoolOverView
+                    pool={this.props.activePool.pool}
+                />
+                <Button
+                    onPress={this.onTrackDriver}
+                > 
+                    <Text> Track </Text>
+                </Button>
+            </View>    
 
         );
     }

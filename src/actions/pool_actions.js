@@ -8,7 +8,7 @@ import {
     POOLS_RECEIVED,
     POOL_REQUESTS_RECEIVED
 } from './types';
-import { GOOGLE_MAPS_API_KEY, URL } from './../config';
+import { GOOGLE_MAPS_API_KEY, URL, IUST_COORDS } from './../config';
 
 export const setDriverDetailModal = (item) => async (dispatch) => {
 
@@ -16,7 +16,7 @@ export const setDriverDetailModal = (item) => async (dispatch) => {
     const lat = latLng.split(',')[0];
     const lng = latLng.split(',')[1];
 
-    const iustLoc = '33.9260206,75.0173499';
+    const iustLoc = IUST_COORDS;
     const flag = item.title.split(' ')[0];
 
     let desination;
@@ -33,9 +33,9 @@ export const setDriverDetailModal = (item) => async (dispatch) => {
         title = `${item.location.place} to Univesity`;
     }
     let waypoints = '';
-    if (item.title.includes('Pantha Chowk')) {
-        waypoints = 'pampore power grid';
-    }
+    // if (item.title.includes('Pantha Chowk')) {
+    //     waypoints = 'pampore power grid';
+    // }
     try {
         const { data } = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${startPoint}&destination=${desination}&waypoints=${waypoints}&key=${GOOGLE_MAPS_API_KEY}`);
         const points = Polyline.decode(data.routes[0].overview_polyline.points);
@@ -75,6 +75,7 @@ export const getPools = (done) => async (dispatch) => {
         job: 'getActivePools',
         token
     });
+    console.log('Pools', data);
     if (data instanceof Array) {
         for (let i = 0; i < data.length; i++) {
             data[i].location = JSON.parse(data[i].location);
@@ -110,6 +111,7 @@ export const sendPoolRequest = (driverDetail, region, done) => async (dispatch) 
             poolId: driverDetail.driver.key,
             location: JSON.stringify(location)
         });
+        console.log('send pool request', data);
         if (data instanceof Array) {
             if (data[0] === 'yup') {
                 done(false, true, '');
@@ -118,6 +120,8 @@ export const sendPoolRequest = (driverDetail, region, done) => async (dispatch) 
             } else {
                 done(false, false, 'Server error');
             }
+        } else {
+            done(false, false, 'server problem');
         }
     } catch (e) {
         done(false, false, 'Check connection');

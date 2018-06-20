@@ -8,7 +8,6 @@ export const signIn = (username, password, done) => async () => {
         [yup, token]
         [nope, errorMessage]
     */
-    console.log(`${URL}_login.php`);
     try {
         const { data } = await axios.post(`${URL}/app/_login.php`, {
             job: 'loginUser',
@@ -16,6 +15,7 @@ export const signIn = (username, password, done) => async () => {
             password,
             platform: Platform.OS
         });
+        console.log('LOGIN response', data);
         if (data instanceof Array) {
             console.log('Array found');
             if (data[0] === 'nope') {
@@ -25,9 +25,9 @@ export const signIn = (username, password, done) => async () => {
                 done(true, false, '');
             }
         } else {
-            done(true, false, 'Please try later, server busy.');
+            done(false, false, 'Please try later, server busy.');
         }     
     } catch (error) {
-        done(true, false, 'Check connection.'); 
+        done(false, false, 'Check connection.'); 
     }
 };

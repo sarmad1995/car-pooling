@@ -19,7 +19,7 @@ class PoolOverView extends React.Component {
         }
     }
     render() {
-        const { name, number, location: { place } } = this.props.item;
+        const { name, number, vehcile_name, location: { place } } = this.props.item;
         return (
             <TouchableOpacity
               activeOpacity={0.7}
@@ -28,7 +28,8 @@ class PoolOverView extends React.Component {
                  <Card containerStyle={{ backgroundColor: DARK, borderRadius: 5 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                     <View style={{ flexDirection: 'column' }}>
-                    <Text style={{ color: 'white', margin: 6 }}> Car: {name}</Text>
+                    <Text style={{ color: 'white', margin: 6 }}> Name: {name}</Text>
+                    <Text style={{ color: 'white', margin: 6 }}> Car: {vehcile_name}</Text>
                         <Text style={{ color: 'white', margin: 6 }}> Number: {number}</Text>
                      </View>
                        

@@ -13,7 +13,7 @@ import { Subtitle } from '@shoutem/ui';
 
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
 const IUST = {
-    latitude: 33.9260206, longitude: 75.0173499
+    latitude: 37.331800223764525, longitude: -122.0305809751153
 };
 
 class DriverDetailModal extends React.Component {

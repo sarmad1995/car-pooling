@@ -4,6 +4,9 @@ import { Linking, Platform } from 'react-native';
 import { LIGHT } from '../../config';
 
 class JourneyOverView extends React.Component {
+    state = {
+        buttonEnabled: false
+    }
     renderButton = () => {
         const { journey } = this.props;
 
@@ -18,6 +21,7 @@ class JourneyOverView extends React.Component {
         } else if (journey.state === 2) {
                 return (
                 <Button
+                     disabled={this.state.buttonEnabled}
                      onPress={this.props.onDropOff}
                 >
                     <Text> Drop Off Complete</Text>

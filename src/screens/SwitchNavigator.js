@@ -10,6 +10,7 @@ import PickLocation from './main/PickLocation';
 import JourneyScreen from './main/JourneyScreen';
 import ActivePool from './main/ActivePool';
 import { DARK } from '../config';
+import TrackDriver from './main/TrackDriver';
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
 // goes here.
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
@@ -99,6 +100,9 @@ const AppStack = TabNavigator({
       pools: {
         screen: ActivePool
         },
+      trackdriver: {
+        screen: TrackDriver
+      }  
     })
    },
    settings: { 

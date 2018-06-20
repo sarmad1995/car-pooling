@@ -80,6 +80,7 @@ export const isDriver = (navigate) => async (dispatch) => {
             job: 'isDriver',
             token
         });
+        console.log('isDriver', data);
         if (data.trim() === 'yup') {
             getDriverDetails(dispatch, token);
         } else if (data.trim() === 'nope') {
@@ -154,7 +155,7 @@ export const isActivePool = () => async (dispatch) => {
             job: 'hasActivePool',
             token
         });
-        console.log(data);
+        console.log('isActivePool', data);
         if (isString(data)) {
             if (data === 'yup') {
                 dispatch({ type: IS_ACTIVE_POOL, payload: true });
