@@ -6,13 +6,16 @@ import {
 const INITIAL_STATE = {
    activePool: {
      error: '',
-     pool: null
+     pendingPool: null,
+     pool: null,
+     lastJourney: null,
    },
    liveLocation: {
      origin: null,
      des: null,
      coords: null
-   }
+   },
+   
   };
 export default function (state = INITIAL_STATE, action) {
   console.log(action);

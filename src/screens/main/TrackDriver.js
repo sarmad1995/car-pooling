@@ -35,6 +35,7 @@ class TrackDriver extends React.Component {
     setTimeout(
         () => {
             try {
+                // this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
                 this.map.fitToCoordinates([{ latitude: Number(origin.lat), longitude: Number(origin.lng) }, { latitude: Number(des.lat), longitude: Number(des.lng) }], {
                     edgePadding: DEFAULT_PADDING,
                     animated: true,
@@ -73,10 +74,10 @@ class TrackDriver extends React.Component {
           );
         }
       } else if (this.props.liveLocation.origin != null) {
-        const oldCoordinate = {
+        const oldCoordinate = new AnimatedRegion({
           latitude: Number(this.props.liveLocation.origin.lat),
           longitude: Number(this.props.liveLocation.origin.lng)
-        };
+        });
         oldCoordinate.timing(newCoordinate).start();
         }
     }

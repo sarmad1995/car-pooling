@@ -44,7 +44,7 @@ class PoolList extends React.Component {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Card style={{ width: '90%', justifyContent: 'center', alignSelf: 'center', padding: 10, alignItems: 'center', marginTop: 6 }}>
      
-                <Subtitle style={{ textAlign: 'center' }}> No Pools available right now. </Subtitle>
+                <Subtitle style={{ textAlign: 'center' }}> {this.props.pools.error} </Subtitle>
                 <Button
                     style={{ width: '100%', margin: 6 }}
                     onPress={this.onRefresh}
@@ -60,16 +60,17 @@ class PoolList extends React.Component {
         );
       }
     render() {
+        const { data } = this.props.pools;
         return (
             <View>
-                {this.props.pools.length !== undefined && <FlatList 
+                {data !== undefined && <FlatList 
                     ListEmptyComponent={this.ListEmptyView}
-                    data={this.props.pools} 
+                    data={data} 
                     renderItem={this.renderRow}
                     refreshing={this.state.refreshing}
                     onRefresh={this.onRefresh}
                 />}
-                {this.props.pools.length === undefined && <Loading />}
+                {data === undefined && <Loading />}
                 <DriverDetailModal
                     visible={this.state.showDriverDetails}
                     onBack={this.onDriverDetailModalBack}

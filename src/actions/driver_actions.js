@@ -9,6 +9,7 @@ import {
     DRIVER_CALLBACK_LOADING,
     POOL_REQUESTS_RECEIVED,
 } from './types';
+import { stop } from '../utils/background_tracking';
 
 function isDriverLoading(dispatch, flag) {
     dispatch({ type: IS_DRIVER_LOADING, payload: flag });
@@ -160,6 +161,7 @@ export const isActivePool = () => async (dispatch) => {
             if (data === 'yup') {
                 dispatch({ type: IS_ACTIVE_POOL, payload: true });
             } else if (data === 'nope') {
+                stop();
                 dispatch({ type: IS_ACTIVE_POOL, payload: false });
             }
         }

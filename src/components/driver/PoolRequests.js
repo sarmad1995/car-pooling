@@ -7,7 +7,7 @@ import AcceptedOverView from './AcceptedOverView';
 import PendingOverView from './PendingOverView';
 import { Loading } from '../common/Loading';
 import { DARK } from '../../config';
-import { start } from '../../utils/background_tracking';
+import { start, stop } from '../../utils/background_tracking';
 
 
 class PoolRequests extends React.Component {
@@ -16,6 +16,7 @@ class PoolRequests extends React.Component {
         loading: false
     }
     componentDidMount() {
+        stop();
         start();
         this.setState({ refreshing: true });
         this.props.getPoolRequests(() => this.setState({ refreshing: false }));

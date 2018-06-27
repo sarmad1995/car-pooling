@@ -62,7 +62,7 @@ export const pickupComplete = (requestId, done) => async (dispatch) => {
         done();
     }
 };
-export const dropoffComplete = (requestId, done) => async (dispatch) => {
+export const dropoffComplete = (requestId, stars, done) => async (dispatch) => {
     const token = await AsyncStorage.getItem('userToken');
     const poolId = await AsyncStorage.getItem('poolId');
 
@@ -71,8 +71,16 @@ export const dropoffComplete = (requestId, done) => async (dispatch) => {
         const { data } = await axios.post(`${URL}/app/_journey.php`, {
             job: 'dropoffComplete',
             token,
-            requestId
+            requestId,
+            poolId
         });
+        const ratingResponse = await axios.post(`${URL}/app/_journey.php`, {
+            job: 'rateRider',
+            requestId,
+            token,
+            stars
+        });
+        console.log('Rating response', ratingResponse.data);
         console.log('dropoffComplete', data);
         const allRequests = await axios.post(`${URL}/app/_pools.php`, {
             job: 'getPoolBuddies',
@@ -94,4 +102,18 @@ export const dropoffComplete = (requestId, done) => async (dispatch) => {
         done();
     }
 };
-
+export const journeyCancelByDriver = (requestId, done) => async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+            job: 'cancelByRider',
+            token,
+            requestId,
+        });
+        console.log('Cancel By Driver', data);
+        done();
+    } catch (error) {
+        console.log(error);
+        done();
+    }
+};

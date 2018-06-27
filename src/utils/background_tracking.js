@@ -12,7 +12,7 @@ BackgroundGeolocation.configure({
     distanceFilter: 50,
     notificationTitle: 'Background tracking',
     notificationText: 'enabled',
-    debug: true,
+    debug: false,
     startOnBoot: false,
     stopOnTerminate: false,
     locationProvider: BackgroundGeolocation.ACTIVITY_PROVIDER,
@@ -34,14 +34,17 @@ BackgroundGeolocation.configure({
   });
 
   BackgroundGeolocation.on('location', async (location) => {
-    console.log(location);
+    console.log(poolId);
+    try {
     const { data } = await axios.post('http://carpool.iustconnect.com/app/_pools.php', {
       job: 'updateLastKnownLocation',
       token,
       poolId,
       location: JSON.stringify(location)
     });
-    console.log('data', data);
+    } catch (e) {
+      console.warn('location not updated');
+    }
     // to perform long running operation on iOS
     // you need to create background task
     BackgroundGeolocation.startTask(taskKey => {
@@ -102,4 +105,8 @@ BackgroundGeolocation.configure({
       BackgroundGeolocation.start(); //triggers start on start event
     }
   });
+};
+
+export const stop = () => {
+  BackgroundGeolocation.events.forEach(event => BackgroundGeolocation.removeAllListeners(event));
 };

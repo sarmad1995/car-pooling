@@ -21,7 +21,10 @@ const INITIAL_STATE = {
     },
     coords: []
   },
-  pools: []
+  pools: {
+    data: [],
+    error: ''
+  }
   
 };
 export default function (state = INITIAL_STATE, action) {

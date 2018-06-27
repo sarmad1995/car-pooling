@@ -3,18 +3,16 @@ import { Modal, StyleSheet, View } from 'react-native';
 import MapView from 'react-native-maps';
 import RNGooglePlaces from 'react-native-google-places';
 import { connect } from 'react-redux';
+import { Subtitle } from '@shoutem/ui';
 
 import { Text, Button, Icon } from 'react-native-elements';
 import { Loading } from './../common';
 import ProgressBar from './../common/ProgressBar';
-import { DARK, LIGHT } from '../../config';
+import { DARK, LIGHT, IUST_COORDS_OBJECT } from '../../config';
 import * as actions from '../../actions';
-import { Subtitle } from '@shoutem/ui';
+
 
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
-const IUST = {
-    latitude: 37.331800223764525, longitude: -122.0305809751153
-};
 
 class DriverDetailModal extends React.Component {
 
@@ -41,7 +39,8 @@ class DriverDetailModal extends React.Component {
         setTimeout(
             () => {
                 try {
-                    this.map.fitToCoordinates([{ latitude: IUST.latitude, longitude: IUST.longitude }, { latitude: Number(lat), longitude: Number(lng) }], {
+                    // this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
+                    this.map.fitToCoordinates([{ latitude: IUST_COORDS_OBJECT.latitude, longitude: IUST_COORDS_OBJECT.longitude }, { latitude: Number(lat), longitude: Number(lng) }], {
                         edgePadding: DEFAULT_PADDING,
                         animated: true,
                     });
@@ -77,6 +76,7 @@ class DriverDetailModal extends React.Component {
           latitudeDelta: 0.004
         });
       }
+
     openSearchModal = () => {
         RNGooglePlaces.openAutocompleteModal({
           latitude: 34.010160,
@@ -118,7 +118,7 @@ class DriverDetailModal extends React.Component {
                 {coords.length === 0 && 
                 <MapView.Polyline
                     coordinates={[
-                        { latitude: IUST.latitude, longitude: IUST.longitude },
+                        { latitude: IUST_COORDS_OBJECT.latitude, longitude: IUST_COORDS_OBJECT.longitude },
                         { latitude: Number(lat), longitude: Number(lng) },
                     ]}
                     strokeWidth={2}
@@ -127,7 +127,7 @@ class DriverDetailModal extends React.Component {
                 }
                  <MapView.Marker
                     pinColor={DARK}
-                    coordinate={{ latitude: IUST.latitude, longitude: IUST.longitude }}
+                    coordinate={{ latitude: IUST_COORDS_OBJECT.latitude, longitude: IUST_COORDS_OBJECT.longitude }}
                     title={'IUST'}
                  />
     

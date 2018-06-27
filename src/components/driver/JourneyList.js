@@ -8,12 +8,16 @@ import { Loading } from '../common/Loading';
 import JourneyOverView from '../common/JourneyOverView';
 import { DARK } from '../../config';
 import * as actions from '../../actions';
+import CancelJourney from '../Modals/CancelJourney';
 
 class JourneyList extends React.Component {
 
     state = {
         refreshing: false,
-        loading: false
+        loading: false,
+        showCancellationModal: false,
+        fetchingModal: false,
+        currentCancellationJourney: null
     }
     componentWillMount() {
         this.setState({ loading: true });
@@ -26,14 +30,32 @@ class JourneyList extends React.Component {
         this.setState({ refreshing: true });
         this.props.getPoolBuddies(() => this.setState({ refreshing: false }));
     }
-
-    onDropOff = (item) => {
+    onDone = () => {
+        this.setState({ loading: false });
+        this.props.isActivePool();
+    }
+    onDropOff = (item, rating) => {
         this.setState({ loading: true });
-        this.props.dropoffComplete(item.id, () => this.setState({ loading: false }));
+        this.props.dropoffComplete(item.id, rating, this.onDone);
     }
     onPickUp = (item) => {
         this.setState({ loading: true });
         this.props.pickupComplete(item.id, () => this.setState({ loading: false }));
+    }
+    onCancel = (item) => {
+        this.setState({ currentCancellationJourney: item });
+        this.setState({ showCancellationModal: true });
+    }
+    onShowCancellationModalDone = async (journey) => {
+        this.setState({ fetchingModal: true });
+        await this.props.journeyCancelByDriver(journey.id, () => {
+            this.setState({ fetchingModal: false });
+            this.setState({ showCancellationModal: false });
+        });
+        this.onRefresh();
+    }
+    onShowCancellationModalCancel = () => {
+        this.setState({ showCancellationModal: false });
     }
     ListEmptyView = () => {
         return (
@@ -59,10 +81,10 @@ class JourneyList extends React.Component {
         return (
             <JourneyOverView
                 onPickUp={() => this.onPickUp(item)}
-                onDropOff={() => this.onDropOff(item)}
+                onDropOff={(rating) => this.onDropOff(item, rating)}
                 index={index}
                 journey={item}
-                onPress={() => this.onPoolOverViewPress(item)}
+                onCancel={() => this.onCancel(item)}
             />
         );
     }
@@ -89,6 +111,13 @@ class JourneyList extends React.Component {
         return (
             <View>
                 {this.renderContent()}
+                <CancelJourney
+                    visible={this.state.showCancellationModal}
+                    onCancel={this.onShowCancellationModalCancel}
+                    onDone={this.onShowCancellationModalDone}
+                    fetching={this.state.fetchingModal}
+                    journey={this.state.currentCancellationJourney}
+                />
             </View>  
         );
     }

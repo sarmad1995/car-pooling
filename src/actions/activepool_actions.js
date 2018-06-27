@@ -76,6 +76,25 @@ const setDirections = async (flag, pool, location, token, dispatch, done) => {
         done(false, true);
     }
 };
+const hasToRateLastJourney = async (token) => {
+    try { 
+        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+        job: 'hasToRateLastJourney',
+        token,
+    });
+    if (data instanceof Array) {
+        if (data[0] === 'yup') {
+            return data[1];
+        } else if (data[0] === 'nope') {
+            return 'nope';
+        } else {
+            return null;
+        }
+    }
+    } catch (e) {
+        return null;
+    }
+};
 
 export const getRidersActivePool = (done) => async (dispatch) => {
     const token = await AsyncStorage.getItem('userToken');
@@ -84,14 +103,37 @@ export const getRidersActivePool = (done) => async (dispatch) => {
             job: 'getRidersActivePool',
             token,
         });
-        console.log('getRidersActivePool', data);
+        
+        const { ridersActivePool, hasPendingRequest } = data;
+        console.log('getRidersActivePool', ridersActivePool);
+        console.log('hasPendingRequest', hasPendingRequest);
 
-        if (data instanceof Array) {
-            if (data[0] === 'yup') {
-                dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: '', pool: data[1][0] } });
+        // Checking Pending Request 
+
+        if (hasPendingRequest) {
+            const { requestId, pendingPool } = hasPendingRequest;
+            dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'pending', pendingPool: { requestId, pool: pendingPool[1][0] } } });
+            return done();
+        }
+        // Checking Riders Active Pool Status
+
+        if (ridersActivePool instanceof Array) {
+            if (ridersActivePool[0] === 'yup') {
+                dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: '', pool: ridersActivePool[1][0] } });
                 done();
-            } else if (data[0] === 'nope') {
-                dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'No Active Pool', pool: 'nope' } });
+            } else if (ridersActivePool[0] === 'nope') {
+                const lastJourney = await hasToRateLastJourney(token);
+                console.log('has to Rate last journey', lastJourney);
+                if (lastJourney !== null) {
+                    if (lastJourney === 'nope') {
+                        dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'No Active Pool', pool: 'nope' } });
+                    } else {
+                        console.log(lastJourney);
+                        dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'pendingRating', lastJourney } });
+                    }
+                } else {
+                    dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'No Active Pool', pool: 'nope' } });
+                } 
                 done();
             } else {
                 dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'Server Busy', pool: 'nope' } });
@@ -165,6 +207,21 @@ export const getJourneyState = (pool, done) => async (dispatch) => {
     }
 };
 
+export const rateDriver = (stars, journeyId, done) => async (dispatch) => {
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+            job: 'rateDriver',
+            journeyId,
+            token,
+            stars
+        });
+        console.log(data);
+        done();
+    } catch (e) {
+        console.warn(e);
+    }
+};
 export const trackDirections = (pool, des) => async (dispatch) => {
     const token = await AsyncStorage.getItem('userToken');
     let origin = await getDriverLocation(pool.id, token);
