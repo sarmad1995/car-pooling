@@ -106,7 +106,7 @@ export const journeyCancelByDriver = (requestId, done) => async () => {
     const token = await AsyncStorage.getItem('userToken');
     try {
         const { data } = await axios.post(`${URL}/app/_journey.php`, {
-            job: 'cancelByRider',
+            job: 'cancelByDriver',
             token,
             requestId,
         });

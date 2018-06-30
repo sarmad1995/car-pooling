@@ -23,6 +23,13 @@ class ActivePool extends React.Component {
     componentDidMount() {
         this.props.isActivePool();
     }
+    onDriverCancel = (done) => {
+        this.props.suspendActivePool(() => {
+            this.props.isActivePool();
+            done();
+            }
+        );
+    }
     renderContent() {
         if (this.props.isActive === null) {
             return (
@@ -31,7 +38,9 @@ class ActivePool extends React.Component {
         } else if (this.props.isActive) {
             return (
                 <View>
-                    <DriversActivePool />
+                    <DriversActivePool
+                        onCancelActivePoolByDriver={this.onDriverCancel}
+                    />
                 </View>
             );
         } 

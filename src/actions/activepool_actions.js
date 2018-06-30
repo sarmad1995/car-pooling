@@ -240,3 +240,48 @@ export const trackDirections = (pool, des) => async (dispatch) => {
         dispatch({ type: DRIVER_TRACKING_RECEIVED, payload: { origin, des, coords } });
     }
 };
+
+
+export const cancelPendingRequestByRider = (requestId, done) => async (dispatch) => {
+    console.log(requestId);
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+        const { data } = await axios.post(`${URL}/app/_requests.php`, {
+            job: 'cancelPendingRequest',
+            token,
+            requestId
+        });
+        console.log('Cancel PendingRequest By Rider', data);
+        done();
+    } catch (error) {
+       done();
+    }
+};
+export const cancelActivePoolByRider = (requestId, done) => async (dispatch) => {
+    console.log(requestId);
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+            job: 'cancelByRider',
+            token,
+        });
+        console.log('Cancel Active Pool By Rider', data);
+        done();
+    } catch (error) {
+       done();
+    }
+};
+
+export const suspendActivePool = (done) => async (dispatch) => {
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+        const { data } = await axios.post(`${URL}/app/_pools.php`, {
+            job: 'suspendActivePool',
+            token,
+        });
+        console.log('Suspend Active Pool', data);
+        done();
+    } catch (error) {
+       done();
+    }
+};

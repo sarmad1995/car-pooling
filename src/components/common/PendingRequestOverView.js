@@ -23,6 +23,7 @@ class PendingRequestOverView extends React.Component {
                         <Text>{number}</Text>
                     </View>
                     <TouchableOpacity
+                        onPress={this.props.onCancel}
                         style={{
                             marginTop: 8, 
                             alignSelf: 'flex-end',
