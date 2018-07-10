@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Heading, Card, Subtitle, Text } from '@shoutem/ui';
+import { Card } from '@shoutem/ui';
+import OpenSansText from './OpenSansText';
 
 class ActivePoolOverView extends React.Component {
     render() {
@@ -10,22 +11,22 @@ class ActivePoolOverView extends React.Component {
         return (
             <Card style={{ width: '100%', padding: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}> 
-                    <Heading>{name}</Heading>
-                    <Subtitle>{gender}</Subtitle>
+                    <OpenSansText>{name}</OpenSansText>
+                    <OpenSansText>{gender}</OpenSansText>
                 </View>
                
                 <View style={{ flexDirection: 'row', marginTop: 6 }}> 
-                    <Heading>{vehicle_name}</Heading>
-                    <Heading>{number} </Heading>
+                    <OpenSansText>{vehicle_name}</OpenSansText>
+                    <OpenSansText>{number} </OpenSansText>
                 </View>
 
-
+                {this.props.cost && <OpenSansText>Cost: {this.props.cost}</OpenSansText>}
                 <View style={{ marginTop: 6 }}> 
-                    <Subtitle>{department_name}</Subtitle>
-                    <Text style={{ marginTop: 6}}>
-                        <Subtitle style={{ fontSize: 17 }}>
+                    <OpenSansText>{department_name}</OpenSansText>
+                    <OpenSansText style={{ marginTop: 6 }}>
+                        <OpenSansText style={{ fontSize: 17 }}>
                             Journey: 
-                        </Subtitle> {journey} </Text>
+                        </OpenSansText> {journey} </OpenSansText>
                 </View>
 
              </Card>   

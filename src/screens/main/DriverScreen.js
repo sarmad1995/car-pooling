@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, Alert } from 'react-native';
-import { Icon, Card } from 'react-native-elements';
+import { Card } from 'react-native-elements';
 import { connect } from 'react-redux';
 import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
 import { Loading } from '../../components/common';
 import DriverFeed from '../../components/driver/DriverFeed';
 import * as actions from '../../actions';
 import { DARK } from '../../config';
+import { Button, Icon } from '../../../node_modules/@shoutem/ui';
 
 class DriverScreen extends React.Component {
   static navigationOptions = {
@@ -14,17 +15,40 @@ class DriverScreen extends React.Component {
   };
       
   state = {
-    showContent: 1
+    showContent: 1,
+    error: ''
   }
   componentWillMount() {
     BackgroundGeolocation.events.forEach(event => BackgroundGeolocation.removeAllListeners(event));
   }
+  
   componentDidMount() {
-    this.props.isDriver(() => this.props.navigation.navigate('Auth'));
+    this.onRefresh();
   }
+  onRefresh = () => {
+    this.props.isDriver((flag, error) => {
+      flag && this.props.navigation.navigate('Auth');
+      this.setState({ error });
+    });
+  } 
   renderDriverScreen() {
     if (this.props.isDriverLoading) {
       return <Loading />;
+    }
+    if (this.state.error) {
+      return (
+        <Card containerStyle={{ height: '90%', margin: 20 }}>
+          <Text>{this.state.error}</Text>
+          <Button
+            onPress={this.onRefresh}
+          >
+            <Icon name='refresh' />
+            <Text>
+            Try again 
+            </Text>
+          </Button>
+        </Card>
+      );
     }
     if (this.props.driverStatus) {
       return (

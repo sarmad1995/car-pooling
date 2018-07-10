@@ -52,7 +52,7 @@ const getDriverDetails = async (dispatch, token) => {
     dispatch({ type: DRIVER_POOL_DETAILS_RECEIVED, payload: { vehicles: data, journeys: journeys.data } });
     isDriverLoading(dispatch, false);
    } catch (error) {
-       console.log(error);
+        return null;
    }      
 };
 
@@ -74,26 +74,35 @@ export const isDriver = (navigate) => async (dispatch) => {
         noAuth
 
     */
+    navigate(false, '');
     isDriverLoading(dispatch, true);
+
     const token = await AsyncStorage.getItem('userToken');
     try {
-        const { data } = await axios.post(`${URL}/app/_drivers.php`, {
+        let { data } = await axios.post(`${URL}/app/_drivers.php`, {
             job: 'isDriver',
             token
         });
         console.log('isDriver', data);
         if (data.trim() === 'yup') {
-            getDriverDetails(dispatch, token);
+           const response = await getDriverDetails(dispatch, token);
+           if (response === null) {
+                isDriverLoading(dispatch, false);
+                navigate(false, 'Something went wrong. Please try again.');
+           }
         } else if (data.trim() === 'nope') {
             dispatch({ type: IS_DRIVER, payload: false });
             isDriverLoading(dispatch, false);
         } else if (data.trim() === 'noAuth') {
-            logout(navigate);
+            logout(navigate(true, ''));
             isDriverLoading(dispatch, false);
-        } 
+        } else {
+            isDriverLoading(dispatch, false);
+            navigate(false, 'Something went wrong. Please try again.');
+        }
     } catch (error) {
-        console.log('Some Problem with server');  
-        console.error(error);
+        isDriverLoading(dispatch, false);
+        navigate(false, 'Please check your internet connection.');
     }
 };
 export const setPool = ({ vehicle, journeyType, latLng, vacancies }, navigate) => async (dispatch) => {
@@ -102,6 +111,7 @@ export const setPool = ({ vehicle, journeyType, latLng, vacancies }, navigate) =
         [yup, requestID]
         [nope, errorMessage]
     */
+    navigate(false, true);
     driverCallbackLoding(dispatch, true);
     const place = await getPlace(latLng);
     let location;
@@ -120,7 +130,7 @@ export const setPool = ({ vehicle, journeyType, latLng, vacancies }, navigate) =
     
     const token = await AsyncStorage.getItem('userToken');
     try {
-        const { data } = await axios.post(`${URL}/app/_pools.php`, {
+        let { data } = await axios.post(`${URL}/app/_pools.php`, {
             job: 'createPool',
             token,
             vehicle,
@@ -134,25 +144,32 @@ export const setPool = ({ vehicle, journeyType, latLng, vacancies }, navigate) =
                 await AsyncStorage.setItem('poolId', JSON.stringify(data[1]));
                 const poolId = await AsyncStorage.getItem('poolId');
                 console.log(poolId);
-                navigate();
+                navigate(true, false);
                   dispatch({ type: IS_ACTIVE_POOL, payload: true });
             }
+            else {
+                navigate(false, false);
+            }
         }
+        navigate(false, false);
     } catch (error) {
-        console.log('Some Problem with server');  
-        console.error(error);
+        navigate(false, false);
     }
 };
 
-export const isActivePool = () => async (dispatch) => {
+export const isActivePool = (callback) => async (dispatch) => {
     /*
         expected responses: 
         yup
         nope
     */
+   if (typeof callback === 'function') { 
+    callback('');
+    }
+    
     const token = await AsyncStorage.getItem('userToken');
     try {
-        let { data } = await axios.post(`${URL}/app/_drivers.php`, {
+        const { data } = await axios.post(`${URL}/app/_drivers.php`, {
             job: 'hasActivePool',
             token
         });
@@ -160,14 +177,25 @@ export const isActivePool = () => async (dispatch) => {
         if (isString(data)) {
             if (data === 'yup') {
                 dispatch({ type: IS_ACTIVE_POOL, payload: true });
+                if (typeof callback === 'function') { 
+                    callback('');
+                    }
             } else if (data === 'nope') {
                 stop();
                 dispatch({ type: IS_ACTIVE_POOL, payload: false });
+                if (typeof callback === 'function') { 
+                    callback('');
+                    }
             }
-        }
+        } else {
+            if (typeof callback === 'function') {
+            callback('Something went wrong, Please try again');
+            }
+        }   
     } catch (error) {
-        console.log('Some Problem with server');  
-        console.error(error);
+        if (typeof callback === 'function') {
+            callback('Please check your internet connection');
+        }
     }
 };
 export const getPoolRequests = (done) => async (dispatch) => {
@@ -181,6 +209,7 @@ export const getPoolRequests = (done) => async (dispatch) => {
             job: 'getPoolRequests',
             token
         });
+        console.log('Requests', data);
         if (data instanceof Object) {
            dispatch({ type: POOL_REQUESTS_RECEIVED, payload: data });    
        }

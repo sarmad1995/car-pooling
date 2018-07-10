@@ -29,6 +29,26 @@ const hasToRateLastJourney = async (token) => {
         return null;
     }
 };
+const getDistance = async (lat, lng) => {
+    try {
+        const { data } = await axios.get(`http://maps.googleapis.com/maps/api/distancematrix/json?origins=${lat},${lng}&destinations=${IUST_COORDS}&mode=driving&language=en-EN&sensor=false`);
+        console.log('Distance', data.rows[0].elements[0].distance.text.split(' ')[0]);
+
+        return data.rows[0].elements[0].distance.text.split(' ')[0];
+    } catch (e) {
+        return 'not_found';
+    }
+};
+const getPlace = async (latLng) => {
+    console.log(latLng);
+    try {
+        const { data } = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latLng}&rankby=distance&type=sublocality,&key=${GOOGLE_MAPS_API_KEY}`);
+        return data.results[0].vicinity;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const setDriverDetailModal = (item) => async (dispatch) => {
 
     const { location: { latLng } } = item;
@@ -118,25 +138,18 @@ export const getPools = (done) => async (dispatch) => {
     done();
   }
 };
-const getPlace = async (latLng) => {
-    console.log(latLng);
-    try {
-        const { data } = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latLng}&rankby=distance&type=sublocality,&key=${GOOGLE_MAPS_API_KEY}`);
-        return data.results[0].vicinity;
-    } catch (e) {
-        console.log(e);
-    }
-};
 export const sendPoolRequest = (driverDetail, region, done) => async (dispatch) => {
     const token = await AsyncStorage.getItem('userToken');
     const place = await getPlace(`${region.latitude},${region.longitude}`);
     const location = { lat: region.latitude, lng: region.longitude, place };
+    const distance = await getDistance(region.latitude, region.longitude);
     try {
         const { data } = await axios.post(`${URL}/app/_requests.php`, {
             token,
             job: 'requestPool',
             poolId: driverDetail.driver.key,
-            location: JSON.stringify(location)
+            location: JSON.stringify(location),
+            distance
         });
         console.log('send pool request', data);
         if (data instanceof Array) {

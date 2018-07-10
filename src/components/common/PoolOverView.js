@@ -19,7 +19,7 @@ class PoolOverView extends React.Component {
         }
     }
     render() {
-        const { name, number, vehcile_name, location: { place } } = this.props.item;
+        const { name, number, vehicle_name, location: { place } } = this.props.item;
         return (
             <TouchableOpacity
               activeOpacity={0.7}
@@ -28,17 +28,18 @@ class PoolOverView extends React.Component {
                  <Card containerStyle={{ backgroundColor: DARK, borderRadius: 5 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                     <View style={{ flexDirection: 'column' }}>
-                    <Text style={{ color: 'white', margin: 6 }}> Name: {name}</Text>
-                    <Text style={{ color: 'white', margin: 6 }}> Car: {vehcile_name}</Text>
-                        <Text style={{ color: 'white', margin: 6 }}> Number: {number}</Text>
+                    <Text style={{ color: 'white', margin: 6, fontFamily: 'OpenSans-Bold', fontWeight: 'bold' }}>{name}</Text>
+                    <Text style={{ color: 'white', margin: 6, fontFamily: 'OpenSans-Bold', fontWeight: 'bold' }}>{vehicle_name}</Text>
+                        <Text style={{ color: 'white', margin: 6, fontFamily: 'OpenSans-Light' }}>{number}</Text>
                      </View>
                        
                         {this.renderIcon()}
                     </View>
-                    <Subtitle style={{ color: 'white', margin: 6 }}> Journey: {this.flag === 'University' ? `University to ${place}` : `${place} to University`}</Subtitle>
+                    <Subtitle style={{ color: 'white', margin: 6, fontFamily: 'OpenSans-Light' }}>{this.flag === 'University' ? `University to ${place}` : `${place} to University`}</Subtitle>
                  </Card>
             </TouchableOpacity>
         );
     }
 }
+
 export default PoolOverView;

@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { Heading, Text, Button, Icon, Card } from '@shoutem/ui';
 import { ActivePoolOverView, Loading } from '../common';
 import PendingRating from './PendingRating';
 import PendingRequestOverView from '../common/PendingRequestOverView';
-import CancelJourney from '../Modals/CancelJourney'
+import CancelJourney from '../Modals/CancelJourney';
 import * as actions from '../../actions';
 
 class RidersActivePool extends React.Component {
@@ -87,6 +87,7 @@ class RidersActivePool extends React.Component {
                 return (
                     <PendingRequestOverView
                         pool={this.props.activePool.pendingPool}
+                        cost={this.props.activePool.cost}
                         onCancel={this.onCancel}
                     />
                 );
@@ -105,7 +106,7 @@ class RidersActivePool extends React.Component {
                     <Button
                         onPress={this.onRefresh}
                     >
-                        <Text> Try Again Rider </Text>
+                        <Text> Try Again </Text>
                         <Icon name='refresh' />
                     </Button>
                 </Card>    
@@ -114,6 +115,7 @@ class RidersActivePool extends React.Component {
             <View>
                 <ActivePoolOverView
                     pool={this.props.activePool.pool}
+                    cost={this.props.activePool.cost}
                 />
                 <Button
                     onPress={this.onTrackDriver}

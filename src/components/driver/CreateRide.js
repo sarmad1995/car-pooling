@@ -54,7 +54,6 @@ class CreateRideForm extends React.Component {
                     data={this.props.driverPoolDetails.journeys}
                     onChangeText={(journeyType, index) => { this.onSelect('journeyType', index); }}                 
                 />
-            
                 <Button    
                      style={{ alignSelf: 'center', borderRadius: 6, width: 150, marginTop: 8 }}
                      onPress={this.onPress}

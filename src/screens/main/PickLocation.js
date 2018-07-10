@@ -39,7 +39,8 @@ class PickLocation extends React.Component {
         this.state = {
           loading: true,
           isMapReady: false,
-          HeaderMessage: 'pick'
+          HeaderMessage: 'pick',
+          buttonLoading: false
         };
     }
     async componentDidMount() {
@@ -89,7 +90,11 @@ class PickLocation extends React.Component {
         const poolDetail = navigation.getParam('poolDetail');
         poolDetail.latLng = `${this.state.region.latitude},${this.state.region.longitude}`;
         start();
-        this.props.setPool(poolDetail, () => { navigation.pop(); });
+        this.props.setPool(poolDetail, (flag, buttonLoading) => { 
+            flag && navigation.pop(); 
+            this.setState({ buttonLoading });
+
+        });
     }
     getLocationAndroid = async () => {
         const granted = await PermissionsAndroid.request(
@@ -209,6 +214,20 @@ class PickLocation extends React.Component {
           console.log('');
         }  
     }
+    renderButton = () => {
+        if (this.state.buttonLoading) {
+            return <Loading />;
+        }
+        return (
+            <Button 
+                onPress={this.onDone}
+                style={{ borderRadius: 6, elevation: 10 }} 
+            >
+                <Icon name="done" />
+                <Text>Done</Text>
+            </Button>
+        );
+    }
     render() {
         const { navigation } = this.props;
         const { journeyFlag } = navigation.getParam('poolDetail');
@@ -237,14 +256,9 @@ class PickLocation extends React.Component {
                 <Text>Search Location</Text>
             </Button>
             </Card>
-            <Button 
-                onPress={this.onDone}
-                style={{ borderRadius: 6, elevation: 10, position: 'absolute', left: 45, right: 45, top: height * (60 / 100) }} 
-            >
-                <Icon name="done" />
-                <Text>Done</Text>
-            </Button>
-
+            <View style={{ position: 'absolute', left: 45, right: 45, top: height * (60 / 100) }}> 
+                {this.renderButton()}
+            </View>
 
             <View pointerEvents='box-none' style={{ position: 'absolute', bottom: '50%', left: 0, right: 0, justifyContent: 'center', alignItems: 'center', elevation: 10 }}>
                 <Icon 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { View } from 'react-native';
-import { Heading } from '@shoutem/ui';
+import { Card, Icon, Text, Button } from '@shoutem/ui';
 import { connect } from 'react-redux';
 import { DARK } from '../../config';
 import { Loading } from '../../components/common';
@@ -20,22 +20,47 @@ class ActivePool extends React.Component {
         fontWeight: 'bold',
         }
     };
+    state = {
+        error: '',
+        loading: true
+    }
     componentDidMount() {
-        this.props.isActivePool();
+        this.onRefresh();
+    }
+    onRefresh = () => {
+        this.setState({ loading: true });
+        this.props.isActivePool(error => {
+            this.setState({ error });
+            this.setState({ loading: false });
+        });
     }
     onDriverCancel = (done) => {
         this.props.suspendActivePool(() => {
-            this.props.isActivePool();
+            this.onRefresh();
             done();
             }
         );
     }
     renderContent() {
-        if (this.props.isActive === null) {
+        if (this.state.loading) {
             return (
                 <Loading />
             );
-        } else if (this.props.isActive) {
+        } else if (this.state.error) {
+            return (
+              <Card style={{ height: '90%', width: '100%', margin: 20 }}>
+                <Text>{this.state.error}</Text>
+                <Button
+                  onPress={this.onRefresh}
+                >
+                  <Icon name='refresh' />
+                  <Text>
+                  Try again 
+                  </Text>
+                </Button>
+              </Card>
+            );
+          } else if (this.props.isActive) {
             return (
                 <View>
                     <DriversActivePool
@@ -43,14 +68,15 @@ class ActivePool extends React.Component {
                     />
                 </View>
             );
-        } 
-        return (
-            <View>
-                <RidersActivePool
-                    navigation={this.props.navigation}
-                />
-            </View>
-        );
+        } else if (!this.props.isActive) {
+            return (
+                <View>
+                    <RidersActivePool
+                        navigation={this.props.navigation}
+                    />
+                </View>
+            );
+        }
     }
     render() {
         return (

@@ -7,6 +7,7 @@ import {
     ACTIVE_POOL_RECEIVED,
     DRIVER_TRACKING_RECEIVED
 } from './types';
+import { stop } from '../utils/background_tracking';
 
 //REturns location in , format
 const getDriverLocation = async (poolId, token) => {
@@ -104,22 +105,22 @@ export const getRidersActivePool = (done) => async (dispatch) => {
             token,
         });
         
-        const { ridersActivePool, hasPendingRequest } = data;
+        const { ridersActivePool, hasPendingRequest, cost: activePoolCost } = data;
         console.log('getRidersActivePool', ridersActivePool);
         console.log('hasPendingRequest', hasPendingRequest);
 
         // Checking Pending Request 
 
         if (hasPendingRequest) {
-            const { requestId, pendingPool } = hasPendingRequest;
-            dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'pending', pendingPool: { requestId, pool: pendingPool[1][0] } } });
+            const { requestId, pendingPool, cost } = hasPendingRequest;
+            dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: 'pending', pendingPool: { requestId, pool: pendingPool[1][0] }, cost } });
             return done();
         }
         // Checking Riders Active Pool Status
 
         if (ridersActivePool instanceof Array) {
             if (ridersActivePool[0] === 'yup') {
-                dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: '', pool: ridersActivePool[1][0] } });
+                dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: '', pool: ridersActivePool[1][0], cost: activePoolCost } });
                 done();
             } else if (ridersActivePool[0] === 'nope') {
                 const lastJourney = await hasToRateLastJourney(token);
@@ -280,6 +281,7 @@ export const suspendActivePool = (done) => async (dispatch) => {
             token,
         });
         console.log('Suspend Active Pool', data);
+        stop();
         done();
     } catch (error) {
        done();

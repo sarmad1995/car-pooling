@@ -51,7 +51,7 @@ class DriversActivePool extends React.Component {
                     <Button
                         onPress={this.onRefresh}
                     >
-                        <Text> Try Again Driver</Text>
+                        <Text> Try Again </Text>
                         <Icon name='refresh' />
                     </Button>
                 </Card>    

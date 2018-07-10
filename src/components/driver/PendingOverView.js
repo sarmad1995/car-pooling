@@ -27,6 +27,8 @@ class PendingOverView extends React.Component {
                         <Icon style={{ height: 50, width: 50, color: 'white' }} name="directions" />
                         </Button>
                     </View>
+                    <Text style={{ color: 'white' }}>Cost: {pool.cost} INR</Text>
+
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <Button
                             onPress={this.props.onDecline}

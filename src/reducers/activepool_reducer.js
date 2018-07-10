@@ -9,6 +9,7 @@ const INITIAL_STATE = {
      pendingPool: null,
      pool: null,
      lastJourney: null,
+     cost: null
    },
    liveLocation: {
      origin: null,

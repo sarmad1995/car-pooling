@@ -69,6 +69,7 @@ class JourneyOverView extends React.Component {
                     
                     <Text style={{ color: 'white' }}>Location: {JSON.parse(journey.location).place}</Text>
                     <Caption style={{ color: 'white' }}>{journey.department_name}</Caption>
+                    <Text style={{ color: 'white' }}>Cost: {journey.cost} INR</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
                         <Caption style={{ color: 'white' }}>{journey.timestamp}</Caption>
                         <Button 

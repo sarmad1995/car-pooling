@@ -40,7 +40,7 @@ const AppStack = TabNavigator({
           navigationOptions: {
             tabBarLabel: 'Driver Feed',
             tabBarIcon: ({ tintColor }) => {
-            return <Icon name="list" size={20} color={tintColor} />;
+            return <Icon name="rss-feed" size={20} color={tintColor} />;
             }
           },
         }
@@ -52,12 +52,13 @@ const AppStack = TabNavigator({
             navigationOptions: {
               tabBarLabel: 'Journey',
               tabBarIcon: ({ tintColor }) => {
-              return <Icon name="list" size={20} color={tintColor} />;
+              return <Icon name="directions-run" size={20} color={tintColor} />;
               }
             },
             screen: JourneyScreen
              },
-        })
+        }, 
+      )
       },
         
      }, { 
@@ -122,22 +123,27 @@ const AppStack = TabNavigator({
     lazy: true,
     animationEnabled: false,
     tabBarOptions: {
+        activeBackgroundColor: 'white',
         activeTintColor: DARK,  // Color o f tab when pressed
-        inactiveTintColor: '#b5b5b5', // Color of tab when not pressed
+        inactiveTintColor: 'white', // Color of tab when not pressed
         showIcon: 'true', // Shows an icon for both iOS and Android
         //showLabel: (Platform.OS !== 'android'), //No label for Android
         labelStyle: {
-          fontSize: 8,
+          fontSize: 10,
+          fontFamily: 'OpenSans-Light',
+          fontWeight: '500',
           margin: 0,
           padding: 0,
         },
         indicatorStyle: {
-         borderBottomColor: '#f5e9dd',
-         borderBottomWidth: 2,
+         backgroundColor: 'white',
+         height: 68
        },
-        style: {
-          backgroundColor: '#fff', // Makes Android tab bar white instead of standard blue
-          }
+         style: {
+           height: 60,
+           borderTopWidth: 0,
+           backgroundColor: DARK, // Makes Android tab bar white instead of standard blue
+           }
         }
           });
 const AuthStack = StackNavigator({

@@ -20,7 +20,7 @@ export const signIn = (username, password, done) => async () => {
         if (data instanceof Array) {
             console.log('Array found');
             if (data[0] === 'nope') {
-                done(false, false, 'Wrong Password');
+                done(false, false, 'Incorrect Credentials');
             } else if (data[0] === 'yup') {
                 const driversActivePool = await axios.post(`${URL}/app/_pools.php`, {
                     job: 'getDriversActivePool',
@@ -32,9 +32,9 @@ export const signIn = (username, password, done) => async () => {
                 done(true, false, '');
             }
         } else {
-            done(false, false, 'Please try later, server busy.');
+            done(false, false, 'Something is not right! Please try again later');
         }     
     } catch (error) {
-        done(false, false, 'Check connection.'); 
+        done(false, false, 'Please check your internet connection.'); 
     }
 };

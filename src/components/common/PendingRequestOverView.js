@@ -22,6 +22,7 @@ class PendingRequestOverView extends React.Component {
                         <Subtitle>{vehicle_name}</Subtitle>
                         <Text>{number}</Text>
                     </View>
+                    <Text> Cost: {this.props.cost} </Text>
                     <TouchableOpacity
                         onPress={this.props.onCancel}
                         style={{
