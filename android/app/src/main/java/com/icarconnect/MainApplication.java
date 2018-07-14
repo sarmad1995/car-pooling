@@ -3,6 +3,7 @@ package com.icarconnect;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 import com.mustansirzia.fused.FusedLocationPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new LocationServicesDialogBoxPackage(),
             new BackgroundGeolocationPackage(),
             new FusedLocationPackage(),
             new MapsPackage(),
