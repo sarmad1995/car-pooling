@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, AsyncStorage } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { View, AsyncStorage } from 'react-native';
+import { Button, Text, Card } from '@shoutem/ui';
 import { DARK } from '../../config';
 
 class SettingsScreen extends React.Component {
@@ -13,24 +13,48 @@ class SettingsScreen extends React.Component {
     headerTitleStyle: {
     fontWeight: 'bold',
     },
-    tabBarIcon: ({ tintColor }) => {
-          return <Icon name="settings" size={20} color={tintColor} />;
-         }
     };
-  signOut = async () => {
+  logOut = async () => {
     await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
   }
   render() {
     return (
       <View>
-        <Text>Sign Out</Text>
+        <Card
+        style= {{
+          backgroundColor: DARK,
+          borderRadius: 6,
+          width: '100%',
+          marginTop: 50,
+          padding: 20
+        }}>
         <Button
-          raised
-          icon={{ name: 'cached' }}
-          title='Sign Out'
-          onPress={this.signOut}
-        />
+          style={{
+            backgroundColor: DARK,
+            borderWidth: 0,
+          }}
+        >
+          <Text style={{ color: 'white' }}> Change Password </Text>
+        </Button>
+        <Button
+          style={{
+            backgroundColor: DARK,
+            borderWidth: 0,
+          }}
+        >
+          <Text style={{ color: 'white' }}> Contact Us? </Text>
+        </Button>
+        <Button
+          style={{
+            backgroundColor: DARK,
+            borderWidth: 0,
+          }}
+          onPress={this.logOut}
+        >
+            <Text style={{ color: 'white' }}> Log Out </Text>
+        </Button>
+        </Card>
       </View>
     );
   }

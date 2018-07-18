@@ -72,6 +72,7 @@ class PoolList extends React.Component {
                 />}
                 {data === undefined && <Loading />}
                 <DriverDetailModal
+                    navigation={this.props.navigation}
                     visible={this.state.showDriverDetails}
                     onBack={this.onDriverDetailModalBack}
                 />

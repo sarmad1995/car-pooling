@@ -7,7 +7,7 @@ import { Card, Icon } from 'react-native-elements';
 
 import RNGooglePlaces from 'react-native-google-places';
 import FusedLocation from 'react-native-fused-location';
-import { DARK, LIGHT } from '../../config';
+import { DARK, LIGHT, IUST_COORDS_OBJECT, IUST_COORDS } from '../../config';
 import { start } from '../../utils/background_tracking';
 
 
@@ -38,28 +38,36 @@ class PickLocation extends React.Component {
         super(props);
         this.state = {
           loading: true,
-          isMapReady: false,
           HeaderMessage: 'pick',
           buttonLoading: false
         };
     }
     async componentDidMount() {
-        Platform.OS === 'android' && await this.requestLocationPermission();
-        Platform.OS === 'ios' ? this.getLocationIOS() : this.getLocationAndroid(); 
-    }
-    componentWillUnmount() {
-        if (Platform.OS === 'ios') {
-          navigator.geolocation.clearWatch(this.watchId);
+        if (Platform.OS === 'android') {
+            this.requestLocationPermission();
         } else {
-          FusedLocation.off(this.subscription);
-          FusedLocation.off(this.errSubscription);
-          FusedLocation.stopLocationUpdates();
+            this.getLocationIOS();
         }
+    }
+
+    componentWillUnmount() {
+        try {
+            if (Platform.OS === 'ios') {
+                navigator.geolocation.clearWatch(this.watchId);
+            } else {
+                FusedLocation.off(this.subscription);
+                FusedLocation.off(this.errSubscription);
+                FusedLocation.stopLocationUpdates();
+                navigator.geolocation.clearWatch(this.watchId);
+                }
+        } catch(e) {
+                console.warn(e);
+            }
     }
     async requestLocationPermission() {
         const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
         if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
-            alert("You've access for the location");
+            this.getLocationAndroid();
         } else {
             try {
                 const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -68,9 +76,10 @@ class PickLocation extends React.Component {
                         message: 'We required Location permission in order to get device location ' +
                             'Please grant us.'
                     }
-                )
+                );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    alert("You've access for the location");
+                    console.log('Granted');
+                    this.getLocationAndroid();
                 } else {
                     alert("You don't have access for the location");
                 }
@@ -89,14 +98,14 @@ class PickLocation extends React.Component {
         const { navigation } = this.props;
         const poolDetail = navigation.getParam('poolDetail');
         poolDetail.latLng = `${this.state.region.latitude},${this.state.region.longitude}`;
-        start();
+        // start();
         this.props.setPool(poolDetail, (flag, buttonLoading) => { 
             flag && navigation.pop(); 
             this.setState({ buttonLoading });
-
         });
     }
     getLocationAndroid = async () => {
+        try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
               title: 'App needs to access your location',
@@ -105,79 +114,60 @@ class PickLocation extends React.Component {
               }
           );
           if (granted) {
-          FusedLocation.setLocationPriority(FusedLocation.Constants.HIGH_ACCURACY);
-          // Get location once.
-          const location = await FusedLocation.getFusedLocation(true);
-          this.setState({ region: {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-          } });
-          this.setState({ lat: location.latitude, long: location.longitude });
-          this.setState({ loading: false });
-          // Set options.
-          FusedLocation.setLocationPriority(FusedLocation.Constants.HIGH_ACCURACY);
-          FusedLocation.setLocationInterval(20000);
-          FusedLocation.setFastestLocationInterval(15000);
-          FusedLocation.setSmallestDisplacement(10);
-          // Keep getting updated location.
-          FusedLocation.startLocationUpdates();
-          
-          // Place listeners.
-          this.subscription = FusedLocation.on('fusedLocation', location => {
-          /* location = {
-          latitude: 14.2323,
-          longitude: -2.2323,
-          speed: 0,
-          altitude: 0,
-          heading: 10,
-          provider: 'fused',
-          accuracy: 30,
-          bearing: 0,
-          mocked: false,
-          timestamp: '1513190221416'
-          }
-          */
-          this.setState({ location });
-          console.log(location);
-          });
-          this.errSubscription = FusedLocation.on('fusedLocationError', error => {
-          console.warn(error);
-          });
-          }
-      }
-    getLocationIOS = () => {
-        this.watchId = navigator.geolocation.watchPosition(
-          
-          (position) => {
-            // for changing the location( custom pickup or drop off point )
-            if (regionChangeFlagIOS === 0) {
+              console.log('getting fused location');
+                FusedLocation.setLocationPriority(FusedLocation.Constants.HIGH_ACCURACY);
+                // Get location once.
+                const location = await FusedLocation.getFusedLocation(true);
                 this.setState({ region: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LONGITUDE_DELTA
                     } });
-                    regionChangeFlagIOS = 1;
-            } 
-            // users current location
-            this.setState({ location: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              speed: position.coords.speed,
-              altitude: position.coords.altitudeAccuracy,
-              heading: position.coords.heading,
-              accuracy: position.coords.accuracy,
-              timestamp: position.timestamp
-                } });
-              this.setState({ loading: false });
-            //   console.log(this.state.location);
-          },
-          (error) => console.log(error),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 },
-        );
+                this.setState({ loading: false });
+                // Set options.
+                
+                this.errSubscription = FusedLocation.on('fusedLocationError', error => {
+                console.warn(error);
+                });
+                }
+            } catch (e) {
+                console.error(e);
+                this.getLocationIOS();
+            }
+      }
+    getLocationIOS = () => {
+        try {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                   // for changing the location( custom pickup or drop off point )
+                        this.setState({ region: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta: LONGITUDE_DELTA
+                        } });
+                        // users current location
+                        this.setState({ loading: false });
+                },
+                (error) => {
+                    console.warn(error);
+                    this.setState({ region: {
+                        latitude: IUST_COORDS_OBJECT.latitude,
+                        longitude: IUST_COORDS_OBJECT.longitude,
+                        latitudeDelta: LATITUDE_DELTA + 1,
+                        longitudeDelta: LONGITUDE_DELTA + 1
+                        } });
+                    this.setState({ loading: false });    
+                },
+                
+                { enableHighAccuracy: true, timeout: 2000 },
+              );
+    } catch (e) {
+        console.error(e);
     }
+    }
+
     animateToRegion(lat, lng) {
         this.map.animateToRegion({
           latitude: lat,
@@ -186,34 +176,18 @@ class PickLocation extends React.Component {
           latitudeDelta: LATITUDE_DELTA
         });
     } 
+
     openSearchModal = () => {
         RNGooglePlaces.openAutocompleteModal({
-          latitude: this.state.location.latitude || 34.010160,
-          longitude: this.state.location.longitude || 74.808882
+          latitude: 34.010160,
+          longitude: 74.808882
         })
         .then((place) => {
           this.animateToRegion(place.latitude, place.longitude);
         })
         .catch(error => console.log(error.message));  // error is a Javascript Error object
     }
-    renderMarker = () => {
-        try {
-          if (this.state.location.latitude) {
-            return (
-              <MapView.Marker 
-                coordinate={{ latitude: this.state.location.latitude, longitude: this.state.location.longitude }}
-              >
-               <Icon 
-                name='my-location'
-                color={DARK}
-               />
-              </MapView.Marker>
-            );
-          }
-        } catch (e) {
-          console.log('');
-        }  
-    }
+
     renderButton = () => {
         if (this.state.buttonLoading) {
             return <Loading />;
@@ -236,7 +210,6 @@ class PickLocation extends React.Component {
         }
         return (
         <View style={{ flex: 1 }}>
-  
             <MapView
                 showsUserLocation
                 provider='google'
@@ -244,9 +217,7 @@ class PickLocation extends React.Component {
                 initialRegion={this.state.region}
                 style={styles.map}
                 onRegionChangeComplete={this.onRegionChange}
-            > 
-            {this.renderMarker()}
-            </MapView>
+            />
             <Card
                 containerStyle={{ alignSelf: 'center', borderRadius: 6, position: 'absolute', margin: 0, left: 15, right: 15, top: 5, elevation: 10 }}
                 title={journeyFlag === 'University' ? 'Pick up your destination' : 'Pick up your starting point'}          
@@ -256,7 +227,7 @@ class PickLocation extends React.Component {
                 <Text>Search Location</Text>
             </Button>
             </Card>
-            <View style={{ position: 'absolute', left: 45, right: 45, top: height * (60 / 100) }}> 
+            <View style={{ position: 'absolute', left: 45, right: 45, top: height * (50 / 100) }}> 
                 {this.renderButton()}
             </View>
 

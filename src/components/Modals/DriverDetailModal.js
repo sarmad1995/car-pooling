@@ -53,6 +53,7 @@ class DriverDetailModal extends React.Component {
     onFinialize = (fetching, shouldGoBack, error) => {
         if (shouldGoBack) {
             this.onBack();
+            this.props.navigation.navigate('activepool');
         }
         this.setState({ fetching, error });
     }
@@ -158,7 +159,7 @@ class DriverDetailModal extends React.Component {
                 <Text style={{ alignSelf: 'center', margin: 6, fontSize: 20 }}> { flag === 'University' ? 'Select your destination' : 'Select your pickup point'}</Text>
                 <Button    
                     icon={{ name: 'location-on' }}
-                    backgroundColor='#415041'
+                    backgroundColor={DARK}
                     buttonStyle={{ borderRadius: 6, marginBottom: 6 }}
                     title='Search for a location'
                     onPress={this.openSearchModal}
