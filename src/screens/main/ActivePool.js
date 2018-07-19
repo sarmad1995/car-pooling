@@ -8,17 +8,13 @@ import { Loading } from '../../components/common';
 import DriversActivePool from '../../components/driver/DriversActivePool';
 import RidersActivePool from '../../components/rider/RidersActivePool';
 import * as actions from '../../actions';
+import Header from '../../components/common/Header';
+import ActivePoolError from '../../components/common/ActivePoolError';
+
 
 class ActivePool extends React.Component {
     static navigationOptions = {
-        title: 'Active Pool',
-        headerStyle: {
-        backgroundColor: DARK,
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-        fontWeight: 'bold',
-        }
+        header: null,
     };
     state = {
         error: '',
@@ -48,17 +44,10 @@ class ActivePool extends React.Component {
             );
         } else if (this.state.error) {
             return (
-              <Card style={{ height: '90%', width: '100%', margin: 20 }}>
-                <Text>{this.state.error}</Text>
-                <Button
-                  onPress={this.onRefresh}
-                >
-                  <Icon name='refresh' />
-                  <Text>
-                  Try again 
-                  </Text>
-                </Button>
-              </Card>
+                <ActivePoolError
+                    error={this.state.error}
+                    onRefresh={this.onRefresh}
+                />
             );
           } else if (this.props.isActive) {
             return (
@@ -81,6 +70,7 @@ class ActivePool extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
+            <Header> Active Pool </Header>
                 {this.renderContent()}
             </View>    
         );

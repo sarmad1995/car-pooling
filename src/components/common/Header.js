@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { DARK } from '../../config';
 import OpenSansText from './OpenSansText';
+
+const { width } = Dimensions.get('window');
 
 class Header extends React.Component {
     render() {
@@ -9,7 +11,7 @@ class Header extends React.Component {
             <View 
             style={{
                 width: '100%',
-                height: '16%',
+                height: '12%',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
@@ -21,7 +23,7 @@ class Header extends React.Component {
                     fontSize: 20,
                     color: 'white',
                     fontWeight: 'bold',
-                    elevation: 5
+                    elevation: 10
                  }}
               >
                   {this.props.children}
@@ -36,17 +38,17 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       alignSelf: 'center',
-      width: '16%',
+      width: '12%',
       height: '100%',
-      borderBottomLeftRadius: 50,
-      borderBottomRightRadius: 50,
+      borderBottomLeftRadius: width / 2,
+      borderBottomRightRadius: width / 2,
       backgroundColor: DARK,
       transform: [
-        { scaleX: 6.25 }
+        { scaleX: 8.333 }
       ],
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.8,
-      elevation: 2,
+      elevation: 6,
     },
   });
 

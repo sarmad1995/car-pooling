@@ -1,45 +1,88 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Heading, Card, Subtitle, Text } from '@shoutem/ui';
+import OpenSansText from './OpenSansText';
+import { DARK } from '../../config';
 
 class PendingRequestOverView extends React.Component {
     render() {
-        console.log(this.props.pool);
         const { name, vehicle_name, number } = this.props.pool.pool;
         return (
             <View>
-                <Card style={{ 
+                <Card 
+                    style={{ 
                         width: '90%',
                         alignSelf: 'center',
-                        padding: 8,
-                        shadowOffset: { width: 2, height: 5 },
-                        shadowColor: 'black'
+                        borderWidth: 1,
+                        borderRadius: 2,
+                        borderColor: '#ddd',
+                        borderBottomWidth: 0,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 3 },
+                        shadowOpacity: 0.8,
+                        shadowRadius: 2,
+                        elevation: 10,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 10,
+                        marginBottom: 10
                      }}
                 >
-                    <Heading style={{ alignSelf: 'center' }}>Pending Request</Heading>
-                    <Subtitle>{name}</Subtitle>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                        <Subtitle>{vehicle_name}</Subtitle>
-                        <Text>{number}</Text>
+                    <OpenSansText style={styles.header}>Pending Request</OpenSansText>
+                    <OpenSansText style={styles.name}>{name}</OpenSansText>
+                    <OpenSansText style={styles.vehicle}>{vehicle_name} | {number} </OpenSansText>
+                    <View style={styles.footer}> 
+                    <OpenSansText style={styles.cost}>{this.props.cost} Rs </OpenSansText>
+                        <TouchableOpacity
+                            onPress={this.props.onCancel}
+                            style={{
+                                alignSelf: 'flex-end',
+                            }}
+                        >
+                            <OpenSansText
+                                style={{ color: 'red', alignSelf: 'center' }}
+                            > Cancel Ride? </OpenSansText>
+                        </TouchableOpacity>
                     </View>
-                    <Text> Cost: {this.props.cost} </Text>
-                    <TouchableOpacity
-                        onPress={this.props.onCancel}
-                        style={{
-                            marginTop: 8, 
-                            alignSelf: 'flex-end',
-                            
-                        }}
-                    >
-                        <Text
-                            style={{ color: 'red' }}
-                        > Cancel </Text>
-                    </TouchableOpacity>
                     
                 </Card>
             </View>
         );
     }
 }
+const styles = StyleSheet.create({
+    header: {
+        color: DARK,
+        alignSelf: 'center',
+        fontSize: 26,
+        fontWeight: '500'
+    },
+    name: {
+        marginTop: 10,
+        color: DARK,
+        alignSelf: 'center',
+        fontSize: 20,
+        fontWeight: '500'
+    },
+    vehicle: {
+        color: DARK,
+        alignSelf: 'center',
+        fontSize: 18,
+    },
+    footer: {
+        marginTop: 8,
+        flexDirection: 'row',
+        width: '100%',
+        backgroundColor: DARK,
+        padding: 8,
+        justifyContent: 'space-between'
+    },
+    cost: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: '700',
+
+    }
+});
 export default PendingRequestOverView;
 

@@ -1,10 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { Heading, Text, Button, Icon, Card } from '@shoutem/ui';
+import { Icon } from 'react-native-elements';
+import { Heading, Text, Button, Card } from '@shoutem/ui';
 import { ActivePoolOverView, Loading } from '../common';
 import CancelJourney from '../Modals/CancelJourney';
 import * as actions from '../../actions';
+import ActivePoolError from '../common/ActivePoolError';
+import OpenSansText from '../common/OpenSansText';
+import { DARK } from '../../config';
 
 class DriversActivePool extends React.Component {
     state = {
@@ -38,6 +42,9 @@ class DriversActivePool extends React.Component {
        });
     }
     renderContent = () => {
+        console.log('Drivers active pool');
+        console.log(this.state.loading);
+        console.log(this.props.activePool);
         if (this.state.loading) {
             return (
                 <View style={{ height: '100%', width: '100%' }}>
@@ -46,15 +53,10 @@ class DriversActivePool extends React.Component {
             );
         } else if (this.props.activePool.pool === 'nope') {
             return (
-                <Card style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                    <Heading>{this.props.activePool.error}</Heading>
-                    <Button
-                        onPress={this.onRefresh}
-                    >
-                        <Text> Try Again </Text>
-                        <Icon name='refresh' />
-                    </Button>
-                </Card>    
+                <ActivePoolError
+                    error={this.props.activePool.error + 'inside drivers active pool'}
+                    onRefresh={this.onRefresh}
+                />  
             );
         } return (
             <View>
@@ -62,10 +64,24 @@ class DriversActivePool extends React.Component {
                 pool={this.props.activePool.pool}
             />
             <Button
-                onPress={this.onCancel}
-            >
-                <Text style={{ color: 'red' }}> Cancel </Text>
-            </Button>
+                    onPress={this.onCancel}
+                    style={{ 
+                        marginTop: 10,
+                        width: '90%', 
+                        alignSelf: 'center',
+                        backgroundColor: DARK, 
+                        padding: 6,
+                        borderRadius: 2,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.6,
+                        shadowRadius: 2
+                    }}
+            > 
+                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Cancel Ride? </OpenSansText>
+                    <Icon name='cancel' color='white' />
+
+                </Button>
             </View>
 
         );

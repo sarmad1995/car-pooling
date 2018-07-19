@@ -151,9 +151,9 @@ class TrackDriver extends React.Component {
 
           {coords.length > 1 && 
                 <MapView.Polyline
-                            coordinates={coords}
-                            strokeWidth={2}
-                            strokeColor="black"
+                          coordinates={coords}
+                          strokeWidth={2}
+                          strokeColor="black"
                 />
                 }
         </MapView>

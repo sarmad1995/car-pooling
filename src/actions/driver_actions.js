@@ -163,9 +163,6 @@ export const isActivePool = (callback) => async (dispatch) => {
         yup
         nope
     */
-   if (typeof callback === 'function') { 
-    callback('');
-    }
     
     const token = await AsyncStorage.getItem('userToken');
     try {

@@ -1,12 +1,16 @@
 import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { Heading, Text, Button, Icon, Card } from '@shoutem/ui';
+import { Icon } from 'react-native-elements';
+import { Heading, Text, Button, Card } from '@shoutem/ui';
 import { ActivePoolOverView, Loading } from '../common';
 import PendingRating from './PendingRating';
 import PendingRequestOverView from '../common/PendingRequestOverView';
 import CancelJourney from '../Modals/CancelJourney';
 import * as actions from '../../actions';
+import ActivePoolError from '../common/ActivePoolError';
+import { DARK } from '../../config';
+import OpenSansText from '../common/OpenSansText';
 
 class RidersActivePool extends React.Component {
     state = {
@@ -101,31 +105,75 @@ class RidersActivePool extends React.Component {
             );
         } else if (this.props.activePool.pool === 'nope') {
             return (
-                <Card style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                    <Heading>{this.props.activePool.error}</Heading>
-                    <Button
-                        onPress={this.onRefresh}
-                    >
-                        <Text> Try Again </Text>
-                        <Icon name='refresh' />
-                    </Button>
-                </Card>    
+                <ActivePoolError
+                    error={this.props.activePool.error}
+                    onRefresh={this.onRefresh}
+                /> 
             );
         } return (
-            <View>
+            <View style={{ height: '100%' }}>
+                <Button
+                    onPress={this.onTrackDriver}
+                    style={{ 
+                        width: '90%', 
+                        alignSelf: 'center', 
+                        marginTop: 8, 
+                        backgroundColor: DARK, 
+                        padding: 6,
+                        borderRadius: 2,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.6,
+                        shadowRadius: 2
+                    }}
+                > 
+                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Track Driver </OpenSansText>
+                    <Icon name='location-on' color='white' />
+                </Button>
+
                 <ActivePoolOverView
                     pool={this.props.activePool.pool}
                     cost={this.props.activePool.cost}
                 />
+                
                 <Button
-                    onPress={this.onTrackDriver}
+                    // onPress={this.onCancel}
+                    style={{ 
+                        width: '90%', 
+                        alignSelf: 'center', 
+                        marginTop: 8, 
+                        backgroundColor: DARK, 
+                        padding: 6,
+                        borderRadius: 2,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.6,
+                        shadowRadius: 2
+                    }}
                 > 
-                    <Text> Track </Text>
+                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Call {this.props.activePool.pool.name} </OpenSansText>
+                    <Icon name='call' color='white' />
+
                 </Button>
+
                 <Button
                     onPress={this.onCancel}
+                    style={{ 
+                        position: 'absolute',
+                        bottom: 100,
+                        width: '90%', 
+                        alignSelf: 'center',
+                        backgroundColor: DARK, 
+                        padding: 6,
+                        borderRadius: 2,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.6,
+                        shadowRadius: 2
+                    }}
                 > 
-                    <Text style={{ color: 'red' }}> Cancel Ride </Text>
+                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Cancel Ride? </OpenSansText>
+                    <Icon name='cancel' color='white' />
 
                 </Button>
             </View>    

@@ -29,7 +29,7 @@ class PoolOverView extends React.Component {
             >
                 <Card 
                  style={{
-                    width: '80%',
+                    width: '90%',
                     alignSelf: 'center',
                     borderWidth: 1,
                     borderRadius: 2,
