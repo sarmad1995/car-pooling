@@ -150,7 +150,7 @@ android {
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.getRequested().getGroup() == 'com.google.android.gms') {
-            details.useVersion('9.8.0')
+            details.useVersion('10.0.1')
         }
     }
 }
