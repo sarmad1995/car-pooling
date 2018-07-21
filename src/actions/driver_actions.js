@@ -144,16 +144,18 @@ export const setPool = ({ vehicle, journeyType, latLng, vacancies }, navigate) =
                 await AsyncStorage.setItem('poolId', JSON.stringify(data[1]));
                 const poolId = await AsyncStorage.getItem('poolId');
                 console.log(poolId);
-                navigate(true, false);
+                navigate(true, false, '');
                   dispatch({ type: IS_ACTIVE_POOL, payload: true });
+            } else if (data[0] === 'nope') {
+                return navigate(false, false, 'Already in journey, Try again');
             }
             else {
-                navigate(false, false);
+                return navigate(false, false, 'Something went wrong, Try again');
             }
         }
-        navigate(false, false);
+        navigate(false, false, 'Something went wrong, Try again');
     } catch (error) {
-        navigate(false, false);
+        navigate(false, false, 'Something went wrong, Try again');
     }
 };
 

@@ -7,6 +7,7 @@ import { Icon } from 'react-native-elements';
 import { DARK } from '../../config';
 import * as actions from '../../actions';
 import { Loading } from '../../components/common';
+import ActivePoolError from '../../components/common/ActivePoolError';
 
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
 const IUST = {
@@ -98,13 +99,9 @@ class TrackDriver extends React.Component {
       );
     } else if (this.state.error) {
       return (
-        <Card>
-            <Heading> No directions available </Heading>
-            <Button> 
-              <Text> Retry </Text>
-              <Icon name='refresh' />
-            </Button>
-        </Card>
+        <ActivePoolError
+          error='oops.!! no directions available :(' 
+        />
       );
     } 
     if (this.props.liveLocation.origin !== null) {
@@ -131,7 +128,7 @@ class TrackDriver extends React.Component {
             }]
           }}
             >
-            <Image
+            {/* <Image
               style={{ 
                 height: 25,
                 width: 25,
@@ -140,7 +137,10 @@ class TrackDriver extends React.Component {
                 }]
               }}
               source={require('../../assets/car.png')}
-            />
+              />
+               */}
+              <Icon name='directions-car' width={25} height={25} />
+            
           </MapView.Marker.Animated>}
 
            {des != null && <MapView.Marker 

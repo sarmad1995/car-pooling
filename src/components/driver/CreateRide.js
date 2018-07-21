@@ -1,11 +1,12 @@
 import React from 'react';
-import {  Button, Text, Icon, } from '@shoutem/ui';
-import { View } from 'react-native';
+import { Button, Text, Icon, } from '@shoutem/ui';
+import { View, StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { Card } from 'react-native-elements';
 import { DARK } from '../../config';
+import OpenSansText from '../common/OpenSansText';
 
 
 const vacanciesData = [{ value: '1' }, { value: '2' }, { value: '3' }, { value: '4' }];
@@ -36,6 +37,31 @@ class CreateRideForm extends React.Component {
     handleViewRef = ref => this.view = ref;
     render() {
         return (
+            <View>
+                <Card 
+                 backgroundColor={'white'}
+                 style={{ 
+                        width: '80%',
+                        alignSelf: 'center',
+                        borderWidth: 1,
+                        borderRadius: 2,
+                        borderColor: '#ddd',
+                        borderBottomWidth: 0,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.6,
+                        shadowRadius: 2,
+                        elevation: 6,
+                        marginLeft: 0,
+                        marginRight: 0,
+                        marginTop: 10,
+                        marginBottom: 10,
+
+                     }} 
+                > 
+                <OpenSansText style={styles.cardHeading}> Create Pool </OpenSansText>
+                <OpenSansText style={styles.cardDetail}> Save upto 70% of your fuel expense </OpenSansText>
+            </Card>
             <Animatable.View ref={this.handleViewRef}>
             <Card containerStyle={{ borderRadius: 6 }}> 
             <View style={{ width: '100%' }}> 
@@ -67,10 +93,22 @@ class CreateRideForm extends React.Component {
 
             </Card>
             </Animatable.View>
-
+            </View>
         );
     }
 }
+const styles = StyleSheet.create({
+    cardHeading: {
+        color: DARK,
+        fontSize: 20,
+        fontWeight: 'bold',
+        alignSelf: 'center'
+    },
+    cardDetail: {
+        alignSelf: 'center',
+        color: 'grey'
+    }
+});
 const mapStateToProps = state => {
     return {
         driverPoolDetails: state.driver.driverPoolDetails

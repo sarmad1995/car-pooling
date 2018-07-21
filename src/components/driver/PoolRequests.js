@@ -8,7 +8,7 @@ import PendingOverView from './PendingOverView';
 import { Loading } from '../common/Loading';
 import { DARK } from '../../config';
 import { start, stop } from '../../utils/background_tracking';
-
+import ActivePoolError from '../common/ActivePoolError';
 
 class PoolRequests extends React.Component {
     state = {
@@ -27,7 +27,13 @@ class PoolRequests extends React.Component {
     } 
     onAccept = (item) => {
         this.setState({ loading: true });
-        this.props.acceptPoolRequest(item.id, () => this.setState({ loading: false }));
+        this.props.acceptPoolRequest(item.id, () => { 
+            this.setState({ loading: false });
+            this.props.navigation.navigate('journey');
+            this.props.getPoolBuddies(() => {
+                // empty callback
+            });
+        });
         console.log(item);
     }
     onDecline = (item) => {
@@ -86,15 +92,10 @@ class PoolRequests extends React.Component {
     }
     renderEmptyList = () => {
         return (
-            <Card style={{ width: '90%', padding: 20, alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-                <Heading> No Pending requests.. </Heading>
-                <Button
-                    onPress={this.onRefresh}
-                >
-                    <Text> Refresh </Text>
-                    <Icon name='refresh' />
-                </Button>
-            </Card>
+            <ActivePoolError
+                error='Your Pending requests will appear here. You can accept or reject them'
+                onRefresh={this.onRefresh}
+            />
         );
     }
     render() {
@@ -107,14 +108,14 @@ class PoolRequests extends React.Component {
         } 
         return (
             <SectionList
-            ListEmptyComponent={this.renderEmptyList}
-            renderSectionHeader={({ section: { title } }) => (
-                this.renderHeader(title)
-            )}
-            sections={this.generateSections()}
-            refreshing={this.state.refreshing}    
-            keyExtractor={(item, index) => index} 
-            onRefresh={this.onRefresh}
+                ListEmptyComponent={this.renderEmptyList}
+                renderSectionHeader={({ section: { title } }) => (
+                    this.renderHeader(title)
+                )}
+                sections={this.generateSections()}
+                refreshing={this.state.refreshing}    
+                keyExtractor={(item, index) => index} 
+                onRefresh={this.onRefresh}
             />    
         ); 
   }

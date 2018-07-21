@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { View, KeyboardAvoidingView, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import { TextInput, Button, Text, Icon, Caption, Subtitle } from '@shoutem/ui';
+
+import { TextInput, Button, TouchableOpacity } from '@shoutem/ui';
 
 import LottieLoading from '../../components/common/LottieLoading';
 import * as actions from '../../actions';
-import { DARK, WARNING } from '../../config';
+import { DARK, WARNING, URL } from '../../config';
 import OpenSansText from '../../components/common/OpenSansText';
 // import * as actions from './../../actions';
 
@@ -74,9 +75,11 @@ renderContent = () => {
         secureTextEntry
         onChangeText={(password) => this.setState({ password, error: '' })}
       />
+       <TouchableOpacity onPress={() => Linking.openURL(URL)} >
       <OpenSansText style={{ color: DARK, fontSize: 15, fontWeight: 'bold', marginBottom: 6, alignSelf: 'center' }}>
         Forgot password?
         </OpenSansText>
+        </TouchableOpacity>
       {/* change width smoothly */}
       {this.state.error !== '' && <OpenSansText style={{ backgroundColor: WARNING, padding: 6, borderRadius: 6, margin: 10, fontWeight: 'bold', color: 'white', alignSelf: 'center' }}>{this.state.error}</OpenSansText>}
       <Button 
@@ -95,10 +98,11 @@ renderContent = () => {
         fontSize: 16, }}
         >Log In</OpenSansText>
       </Button>
-
+      <TouchableOpacity onPress={() => Linking.openURL(URL)} >
       <OpenSansText style={{ color: DARK, fontSize: 13, textAlign: 'center', fontWeight: 'bold', alignSelf: 'center', marginTop: 20 }}>
         Don't have an account yet? {'\n'} Sign up now!
         </OpenSansText>
+        </TouchableOpacity>
     </View>
   );
 }

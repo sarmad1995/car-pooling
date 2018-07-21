@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, AsyncStorage } from 'react-native';
+import { View, AsyncStorage, Linking } from 'react-native';
 import { Button, Text, Card } from '@shoutem/ui';
-import { DARK } from '../../config';
+import { DARK, URL } from '../../config';
 
 class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -30,6 +30,7 @@ class SettingsScreen extends React.Component {
           padding: 20
         }}>
         <Button
+          onPress={() => Linking.openURL(URL)}
           style={{
             backgroundColor: DARK,
             borderWidth: 0,
@@ -38,6 +39,7 @@ class SettingsScreen extends React.Component {
           <Text style={{ color: 'white' }}> Change Password </Text>
         </Button>
         <Button
+          onPress={() => Linking.openURL(URL)}
           style={{
             backgroundColor: DARK,
             borderWidth: 0,

@@ -22,7 +22,9 @@ export const getPoolBuddies = (done) => async (dispatch) => {
            }
                   dispatch({ type: POOL_BUDDIES_RECEIVED, payload: data });
                   done();
-            }
+        } else if (!data) {
+            dispatch({ type: POOL_BUDDIES_RECEIVED, payload: [] });
+        }
             done();
     } catch (error) {
         done();

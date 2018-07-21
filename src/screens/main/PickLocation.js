@@ -19,7 +19,6 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0322;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-let regionChangeFlagIOS = 0;
 let selectedLocation;
 
 class PickLocation extends React.Component {
@@ -39,12 +38,13 @@ class PickLocation extends React.Component {
         this.state = {
           loading: true,
           HeaderMessage: 'pick',
-          buttonLoading: false
+          buttonLoading: false,
+          error: ''
         };
     }
     async componentDidMount() {
         if (Platform.OS === 'android') {
-            this.requestLocationPermission();
+            this.getLocationAndroid();
         } else {
             this.getLocationIOS();
         }
@@ -52,42 +52,37 @@ class PickLocation extends React.Component {
 
     componentWillUnmount() {
         try {
-            if (Platform.OS === 'ios') {
-                navigator.geolocation.clearWatch(this.watchId);
-            } else {
+            if (Platform.OS === 'android') {
                 FusedLocation.off(this.subscription);
-                FusedLocation.off(this.errSubscription);
-                FusedLocation.stopLocationUpdates();
-                navigator.geolocation.clearWatch(this.watchId);
-                }
-        } catch(e) {
-                console.warn(e);
             }
-    }
-    async requestLocationPermission() {
-        const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-        if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
-            this.getLocationAndroid();
-        } else {
-            try {
-                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: 'App required Location ',
-                        message: 'We required Location permission in order to get device location ' +
-                            'Please grant us.'
-                    }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    console.log('Granted');
-                    this.getLocationAndroid();
-                } else {
-                    alert("You don't have access for the location");
-                }
-            } catch (err) {
-                alert(err);
-            }
+        } catch (e) {
+            console.warn(e);
         }
     }
+    // async requestLocationPermission() {
+    //     const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    //     if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
+    //         this.getLocationAndroid();
+    //     } else {
+    //         try {
+    //             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //                 {
+    //                     title: 'App required Location ',
+    //                     message: 'We required Location permission in order to get device location ' +
+    //                         'Please grant us.'
+    //                 }
+    //             );
+    //             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //                 console.log('Granted');
+    //                 this.getLocationAndroid();
+    //             } else {
+    //                 alert("You don't have access for the location");
+    //             }
+    //         } catch (err) {
+    //             alert(err);
+    //         }
+    //     }
+    // }
 
     onRegionChange = (region) => {
         selectedLocation = region;
@@ -99,7 +94,8 @@ class PickLocation extends React.Component {
         const poolDetail = navigation.getParam('poolDetail');
         poolDetail.latLng = `${this.state.region.latitude},${this.state.region.longitude}`;
         // start();
-        this.props.setPool(poolDetail, (flag, buttonLoading) => { 
+        this.props.setPool(poolDetail, (flag, buttonLoading, error) => { 
+            this.setState({ error });
             flag && navigation.pop(); 
             this.setState({ buttonLoading });
         });
@@ -115,9 +111,9 @@ class PickLocation extends React.Component {
           );
           if (granted) {
               console.log('getting fused location');
-                FusedLocation.setLocationPriority(FusedLocation.Constants.HIGH_ACCURACY);
+                FusedLocation.setLocationPriority(FusedLocation.Constants.BALANCED);
                 // Get location once.
-                const location = await FusedLocation.getFusedLocation(true);
+                const location = await FusedLocation.getFusedLocation(false);
                 this.setState({ region: {
                     latitude: location.latitude,
                     longitude: location.longitude,
@@ -125,14 +121,11 @@ class PickLocation extends React.Component {
                     longitudeDelta: LONGITUDE_DELTA
                     } });
                 this.setState({ loading: false });
-                // Set options.
-                
-                this.errSubscription = FusedLocation.on('fusedLocationError', error => {
-                console.warn(error);
-                });
+                console.log('Got fused location');
                 }
             } catch (e) {
                 console.error(e);
+                console.log('Starting backup locaiton');
                 this.getLocationIOS();
             }
       }
@@ -149,6 +142,7 @@ class PickLocation extends React.Component {
                         } });
                         // users current location
                         this.setState({ loading: false });
+                        console.log('got navigator location');
                 },
                 (error) => {
                     console.warn(error);
@@ -159,9 +153,10 @@ class PickLocation extends React.Component {
                         longitudeDelta: LONGITUDE_DELTA + 1
                         } });
                     this.setState({ loading: false });    
+                    console.log('got no location ');
                 },
                 
-                { enableHighAccuracy: true, timeout: 2000 },
+                { enableHighAccuracy: false, timeout: 2000 },
               );
     } catch (e) {
         console.error(e);
@@ -191,6 +186,14 @@ class PickLocation extends React.Component {
     renderButton = () => {
         if (this.state.buttonLoading) {
             return <Loading />;
+        } else if (this.state.error) {
+            return (
+                <Button
+                    onPress={this.onDone}
+                >
+                    <Text>{this.state.error} </Text>
+                </Button>
+            ); 
         }
         return (
             <Button 

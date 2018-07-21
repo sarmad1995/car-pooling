@@ -19,7 +19,9 @@ class DriverFeed extends React.Component {
         } else if (this.props.isActive) {
             return (
                 <View>
-                    <PoolRequests />
+                    <PoolRequests
+                        navigation={this.props.navigation}
+                    />
                 </View>
             );
         } 
