@@ -59,7 +59,7 @@ class CreateRideForm extends React.Component {
 
                      }} 
                 > 
-                <OpenSansText style={styles.cardHeading}> Create Pool </OpenSansText>
+                <OpenSansText style={styles.cardHeading}> Create Ride </OpenSansText>
                 <OpenSansText style={styles.cardDetail}> Save upto 70% of your fuel expense </OpenSansText>
             </Card>
             <Animatable.View ref={this.handleViewRef}>

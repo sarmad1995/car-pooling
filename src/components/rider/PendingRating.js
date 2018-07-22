@@ -7,7 +7,7 @@ import { DARK } from '../../config';
 
 class PendingRating extends React.Component {
     state = {
-        starCount: 3.5,
+        starCount: 1,
         buttonHidden: true
     }
     onStarRatingPress = (rating) => {

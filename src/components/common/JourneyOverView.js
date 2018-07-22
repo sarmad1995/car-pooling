@@ -7,7 +7,7 @@ import { LIGHT } from '../../config';
 class JourneyOverView extends React.Component {
     state = {
         buttonDisabled: true,
-        starCount: 3.5
+        starCount: 1
     }
     onPickUp = () => {
         this.props.onPickUp();

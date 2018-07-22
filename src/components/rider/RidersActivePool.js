@@ -138,7 +138,7 @@ class RidersActivePool extends React.Component {
                 />
                 
                 <Button
-                    // onPress={this.onCancel}
+                    onPress={this.props.callDriver}
                     style={{ 
                         width: '90%', 
                         alignSelf: 'center', 

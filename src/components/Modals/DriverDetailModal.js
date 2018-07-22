@@ -10,6 +10,7 @@ import { Loading } from './../common';
 import ProgressBar from './../common/ProgressBar';
 import { DARK, LIGHT, IUST_COORDS_OBJECT } from '../../config';
 import * as actions from '../../actions';
+import OpenSansText from '../common/OpenSansText';
 
 
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
@@ -222,7 +223,7 @@ class DriverDetailModal extends React.Component {
                     
                     {this.state.error !== '' &&
                         <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', width: 300 }}>
-                            <Subtitle style={{ width: 300, color: 'red' }}>{this.state.error}</Subtitle> 
+                            <OpenSansText style={{ width: 300, color: 'red', alignSelf: 'center', margin: 8 }}>{this.state.error}</OpenSansText> 
                         </View>
                     }
                 </View>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Linking } from 'react-native';
 import Polyline from '@mapbox/polyline';
 
 import { URL, GOOGLE_MAPS_API_KEY, IUST_COORDS } from './../config';
@@ -120,6 +120,7 @@ export const getRidersActivePool = (done) => async (dispatch) => {
 
         if (ridersActivePool instanceof Array) {
             if (ridersActivePool[0] === 'yup') {
+                AsyncStorage.setItem('driverId', JSON.stringify(ridersActivePool[1][0].driverId));
                 dispatch({ type: ACTIVE_POOL_RECEIVED, payload: { error: '', pool: ridersActivePool[1][0], cost: activePoolCost } });
                 done();
             } else if (ridersActivePool[0] === 'nope') {
@@ -285,5 +286,25 @@ export const suspendActivePool = (done) => async (dispatch) => {
         done();
     } catch (error) {
        done();
+    }
+};
+
+export const callDriver = () => async (dispatch) => {
+    const token = await AsyncStorage.getItem('userToken');
+    const driverId = await AsyncStorage.getItem('driverId');
+    try {
+        const { data } = await axios.post(`${URL}/app/_drivers.php`, {
+            job: 'getDriversNumber',
+            token,
+            driverId
+        });
+        console.log(data.toString().length);
+        if (data.toString().length <= 10) {
+            console.log('calling');
+            Linking.openURL(`tel:${data}`);
+        }
+
+    } catch (error) {
+       console.error(error);
     }
 };
