@@ -47,6 +47,7 @@ class ActivePool extends React.Component {
                 <ActivePoolError
                     error={this.state.error}
                     onRefresh={this.onRefresh}
+                    buttonName='Try again'
                 />
             );
           } else if (this.props.isActive) {
@@ -70,7 +71,7 @@ class ActivePool extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-            <Header> Active Pool </Header>
+            <Header> Track your Active Pool </Header>
                 {this.renderContent()}
             </View>    
         );

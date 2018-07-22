@@ -49,7 +49,7 @@ class PoolList extends React.Component {
                     style={{ width: '100%', margin: 6 }}
                     onPress={this.onRefresh}
                 > 
-                    <Text> Try Again </Text>
+                    <Text> Refresh </Text>
                     <Icon name='refresh' />
                 </Button>    
         

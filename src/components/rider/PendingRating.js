@@ -47,13 +47,13 @@ class PendingRating extends React.Component {
                         rating={this.state.starCount}
                         selectedStar={(rating) => this.onStarRatingPress(rating)}
                      />
-                    <Button 
-                        disabled={this.state.buttonHidden}
+                    {!this.state.buttonHidden && <Button 
                         style={{ width: '100%', marginTop: 6 }}
                         onPress={this.onDone}
                     >
                         <Text> Done </Text>
                     </Button>
+                    }
                 </Card>
             </View>
          );

@@ -37,7 +37,7 @@ class ActivePoolError extends React.Component {
                             <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                             <OpenSansText
                                 style={{ color: 'white', alignSelf: 'center', fontWeight: 'bold' }}
-                            > Try again? </OpenSansText>
+                            > {this.props.buttonName} </OpenSansText>
                             <Icon name='refresh' color='white'/> 
                             </View>
                             

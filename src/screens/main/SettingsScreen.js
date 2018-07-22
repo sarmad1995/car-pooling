@@ -39,15 +39,6 @@ class SettingsScreen extends React.Component {
           <Text style={{ color: 'white' }}> Change Password </Text>
         </Button>
         <Button
-          onPress={() => Linking.openURL(URL)}
-          style={{
-            backgroundColor: DARK,
-            borderWidth: 0,
-          }}
-        >
-          <Text style={{ color: 'white' }}> Contact Us? </Text>
-        </Button>
-        <Button
           style={{
             backgroundColor: DARK,
             borderWidth: 0,

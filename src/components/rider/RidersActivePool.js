@@ -108,6 +108,7 @@ class RidersActivePool extends React.Component {
                 <ActivePoolError
                     error={this.props.activePool.error}
                     onRefresh={this.onRefresh}
+                    buttonName='Refresh'
                 /> 
             );
         } return (
