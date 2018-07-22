@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { AsyncStorage, Linking } from 'react-native';
+import call from 'react-native-phone-call';
 import Polyline from '@mapbox/polyline';
+
 
 import { URL, GOOGLE_MAPS_API_KEY, IUST_COORDS } from './../config';
 import {
@@ -33,7 +35,14 @@ const getDirections = async (origin, des) => {
                 longitude: point[1]
             };
         });    
-        return coords;   
+        console.log();
+        console.log(data.routes[0].legs[0].duration.text);
+
+        return {
+            distance: data.routes[0].legs[0].distance.text,
+            duration: data.routes[0].legs[0].duration.text,
+            coords
+        } 
     } catch (error) {
         return null;
     }
@@ -57,8 +66,8 @@ const setDirections = async (flag, pool, location, token, dispatch, done) => {
     console.log('Destination', des);
     const originArray = origin.split(',');
     const desArray = des.split(',');
-    const coords = await getDirections(origin, des);
-    
+    const { coords, distance, duration } = await getDirections(origin, des);
+
     origin = {
         lat: originArray[0],
         lng: originArray[1]
@@ -68,7 +77,7 @@ const setDirections = async (flag, pool, location, token, dispatch, done) => {
         lng: desArray[1]
     };
     if (coords != null) {
-        dispatch({ type: DRIVER_TRACKING_RECEIVED, payload: { origin, des, coords } });
+        dispatch({ type: DRIVER_TRACKING_RECEIVED, payload: { origin, des, coords, distance, duration } });
 
         if (typeof done === 'function') { 
             done(false, false);
@@ -229,7 +238,7 @@ export const trackDirections = (pool, des) => async (dispatch) => {
     let origin = await getDriverLocation(pool.id, token);
     const heading = origin.heading;
     origin = `${origin.latitude},${origin.longitude}`;
-    const coords = await getDirections(origin, `${des.lat},${des.lng}`);
+    const { coords, distance, duration } = await getDirections(origin, `${des.lat},${des.lng}`);
     
     console.log('heading:', heading);
     if (coords != null && origin != null) {
@@ -239,7 +248,7 @@ export const trackDirections = (pool, des) => async (dispatch) => {
             lng: originArray[1],
             heading
         };
-        dispatch({ type: DRIVER_TRACKING_RECEIVED, payload: { origin, des, coords } });
+        dispatch({ type: DRIVER_TRACKING_RECEIVED, payload: { origin, des, coords, distance, duration } });
     }
 };
 
@@ -301,7 +310,12 @@ export const callDriver = () => async (dispatch) => {
         console.log(data.toString().length);
         if (data.toString().length <= 10) {
             console.log('calling');
-            Linking.openURL(`tel:${data}`);
+            const args = {
+                number: data.toString().trim(), // String value with the number to call
+                prompt: true // Optional boolean property. Determines if the user should be prompt prior to the call 
+              };
+            
+            call(args).catch(console.error);
         }
 
     } catch (error) {

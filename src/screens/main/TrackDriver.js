@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Platform, Image } from 'react-native';
+import { View, StyleSheet, Platform, Image, TouchableOpacity } from 'react-native';
 import MapView, { AnimatedRegion } from 'react-native-maps';
 import { connect } from 'react-redux';
 import { Card, Heading, Text, Button } from '@shoutem/ui';
@@ -8,6 +8,7 @@ import { DARK } from '../../config';
 import * as actions from '../../actions';
 import { Loading } from '../../components/common';
 import ActivePoolError from '../../components/common/ActivePoolError';
+import OpenSansText from '../../components/common/OpenSansText';
 
 const DEFAULT_PADDING = { top: 40, right: 40, bottom: 40, left: 40 };
 const IUST = {
@@ -20,6 +21,7 @@ class TrackDriver extends React.Component {
   state = {
     loading: true,
     error: false,
+    showCallButton: false,
     coordinate: new AnimatedRegion({
       latitude: IUST.latitude,
       longitude: IUST.longitude,
@@ -36,7 +38,7 @@ class TrackDriver extends React.Component {
     setTimeout(
         () => {
             try {
-                // this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
+                this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
                 this.map.fitToCoordinates([{ latitude: Number(origin.lat), longitude: Number(origin.lng) }, { latitude: Number(des.lat), longitude: Number(des.lng) }], {
                     edgePadding: DEFAULT_PADDING,
                     animated: true,
@@ -59,7 +61,10 @@ class TrackDriver extends React.Component {
   }  
   componentWillReceiveProps(nextProps) {
     const duration = 1000;
-  
+    if (nextProps.liveLocation.distance.split(' ')[0] < 2) {
+      this.setState({ showCallButton: true });
+    }
+    
     if (this.props.liveLocation.origin !== nextProps.liveLocation.origin) {
       const newCoordinate = {
         latitude: Number(nextProps.liveLocation.origin.lat),
@@ -107,6 +112,7 @@ class TrackDriver extends React.Component {
     if (this.props.liveLocation.origin !== null) {
       const { origin, des, coords } = this.props.liveLocation;
       return (
+        
         <MapView
               provider='google'
               style={{ height: '100%', width: '100%' }}
@@ -156,6 +162,7 @@ class TrackDriver extends React.Component {
                           strokeColor="black"
                 />
                 }
+                
         </MapView>
       );
     }  
@@ -164,13 +171,59 @@ class TrackDriver extends React.Component {
     return (
       <View style={{ flex: 1 }}>
       {this.renderContent()}
+      { !this.state.loading && !this.state.error && <Card 
+                  style={{
+                      position: 'absolute',
+                      width: '90%',
+                      alignSelf: 'center',
+                      borderWidth: 1,
+                      borderRadius: 2,
+                      borderColor: '#ddd',
+                      borderBottomWidth: 0,
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.6,
+                      shadowRadius: 2,
+                      elevation: 6,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginTop: 10,
+                      marginBottom: 10,
+                  }}
+              > 
+              <OpenSansText style={styles.durationStyle}>Duration: {this.props.liveLocation.duration} </OpenSansText>
+              <OpenSansText style={styles.durationStyle}>Distance: {this.props.liveLocation.distance} </OpenSansText>
+              {this.state.showCallButton && <TouchableOpacity
+                    onPress={this.props.callDriver}
+                    style={{ 
+                        // width: '90%', 
+                        alignSelf: 'center', 
+                        marginTop: 8, 
+                        padding: 6,
+                    }}
+                > 
+                    <OpenSansText style={{ color: DARK, fontWeight: '400', fontSize: 16 }}> Call {this.props.activePool.pool.name} </OpenSansText>
+                    <Icon name='call' color={DARK} />
+
+                </TouchableOpacity>}
+
+              </Card>}
       </View>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  durationStyle: {
+    alignSelf: 'center',
+    color: DARK,
+    fontWeight: '500',
+    margin: 4
+  }
+});
 const mapStateToProps = state => {
   return {
+    activePool: state.activepool.activePool,
     liveLocation: state.activepool.liveLocation
   };
 };

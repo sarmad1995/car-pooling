@@ -40,7 +40,7 @@ class DriverDetailModal extends React.Component {
         setTimeout(
             () => {
                 try {
-                    // this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
+                    this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
                     this.map.fitToCoordinates([{ latitude: IUST_COORDS_OBJECT.latitude, longitude: IUST_COORDS_OBJECT.longitude }, { latitude: Number(lat), longitude: Number(lng) }], {
                         edgePadding: DEFAULT_PADDING,
                         animated: true,

@@ -8,7 +8,6 @@ import { Card, Icon } from 'react-native-elements';
 import RNGooglePlaces from 'react-native-google-places';
 import FusedLocation from 'react-native-fused-location';
 import { DARK, LIGHT, IUST_COORDS_OBJECT, IUST_COORDS } from '../../config';
-import { start } from '../../utils/background_tracking';
 
 
 import { Loading } from '../../components/common';
@@ -16,7 +15,7 @@ import * as actions from '../../actions';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0322;
+const LATITUDE_DELTA = 0.0122;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 let selectedLocation;
@@ -59,30 +58,6 @@ class PickLocation extends React.Component {
             console.warn(e);
         }
     }
-    // async requestLocationPermission() {
-    //     const chckLocationPermission = PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-    //     if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
-    //         this.getLocationAndroid();
-    //     } else {
-    //         try {
-    //             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    //                 {
-    //                     title: 'App required Location ',
-    //                     message: 'We required Location permission in order to get device location ' +
-    //                         'Please grant us.'
-    //                 }
-    //             );
-    //             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //                 console.log('Granted');
-    //                 this.getLocationAndroid();
-    //             } else {
-    //                 alert("You don't have access for the location");
-    //             }
-    //         } catch (err) {
-    //             alert(err);
-    //         }
-    //     }
-    // }
 
     onRegionChange = (region) => {
         selectedLocation = region;
@@ -100,6 +75,18 @@ class PickLocation extends React.Component {
             this.setState({ buttonLoading });
         });
     }
+    onLayout = () => {
+        setTimeout(
+            () => {
+                try {
+                    this.map.setMapBoundaries({ latitude: 34.277865, longitude: 75.351941 }, { latitude: 33.635500, longitude: 74.522094 });
+                } catch (e) {
+                    console.error(e);
+                } 
+            }, 1000
+        );   
+    }
+
     getLocationAndroid = async () => {
         try {
         const granted = await PermissionsAndroid.request(
@@ -182,7 +169,6 @@ class PickLocation extends React.Component {
         })
         .catch(error => console.log(error.message));  // error is a Javascript Error object
     }
-
     renderButton = () => {
         if (this.state.buttonLoading) {
             return <Loading />;
@@ -205,6 +191,7 @@ class PickLocation extends React.Component {
             </Button>
         );
     }
+
     render() {
         const { navigation } = this.props;
         const { journeyFlag } = navigation.getParam('poolDetail');
@@ -220,6 +207,7 @@ class PickLocation extends React.Component {
                 initialRegion={this.state.region}
                 style={styles.map}
                 onRegionChangeComplete={this.onRegionChange}
+                onLayout={this.onLayout}
             />
             <Card
                 containerStyle={{ alignSelf: 'center', borderRadius: 6, position: 'absolute', margin: 0, left: 15, right: 15, top: 5, elevation: 10 }}

@@ -128,7 +128,7 @@ class RidersActivePool extends React.Component {
                         shadowRadius: 2
                     }}
                 > 
-                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Track Driver </OpenSansText>
+                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 20, padding: 4 }}> Track Driver </OpenSansText>
                     <Icon name='location-on' color='white' />
                 </Button>
 
@@ -136,26 +136,6 @@ class RidersActivePool extends React.Component {
                     pool={this.props.activePool.pool}
                     cost={this.props.activePool.cost}
                 />
-                
-                <Button
-                    onPress={this.props.callDriver}
-                    style={{ 
-                        width: '90%', 
-                        alignSelf: 'center', 
-                        marginTop: 8, 
-                        backgroundColor: DARK, 
-                        padding: 6,
-                        borderRadius: 2,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.6,
-                        shadowRadius: 2
-                    }}
-                > 
-                    <OpenSansText style={{ color: 'white', fontWeight: '400', fontSize: 16 }}> Call {this.props.activePool.pool.name} </OpenSansText>
-                    <Icon name='call' color='white' />
-
-                </Button>
 
                 <Button
                     onPress={this.onCancel}
