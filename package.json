@@ -14,7 +14,7 @@
   "dependencies": {
     "@mapbox/polyline": "^1.0.0",
     "@shoutem/ui": "^0.23.4",
-    "axios": "^0.18.0",
+    "axios": "^0.17.0",
     "lottie-react-native": "2.3.2",
     "react": "16.3.1",
     "react-native": "0.55.4",

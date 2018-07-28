@@ -5,12 +5,16 @@ import {
     POOL_BUDDIES_RECEIVED
 } from './types';
 
+const httpClient = axios.create();
+httpClient.defaults.timeout = 10000;
+
+
 export const getPoolBuddies = (done) => async (dispatch) => {
     const token = await AsyncStorage.getItem('userToken');
     const poolId = await AsyncStorage.getItem('poolId');
 
     try {
-        const { data } = await axios.post(`${URL}/app/_pools.php`, {
+        const { data } = await httpClient.post(`${URL}/app/_pools.php`, {
             job: 'getPoolBuddies',
             token,
             poolId
@@ -27,6 +31,7 @@ export const getPoolBuddies = (done) => async (dispatch) => {
         }
             done();
     } catch (error) {
+        console.log(error);
         done();
         console.log('Some Problem with server');  
     }
@@ -37,13 +42,13 @@ export const pickupComplete = (requestId, done) => async (dispatch) => {
 
     console.log(requestId);
     try {
-        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+        const { data } = await httpClient.post(`${URL}/app/_journey.php`, {
             job: 'pickupComplete',
             token,
             requestId
         });
         console.log('onPickup', data);
-        const allRequests = await axios.post(`${URL}/app/_pools.php`, {
+        const allRequests = await httpClient.post(`${URL}/app/_pools.php`, {
             job: 'getPoolBuddies',
             token,
             poolId
@@ -70,13 +75,13 @@ export const dropoffComplete = (requestId, stars, done) => async (dispatch) => {
 
     console.log(requestId);
     try {
-        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+        const { data } = await httpClient.post(`${URL}/app/_journey.php`, {
             job: 'dropoffComplete',
             token,
             requestId,
             poolId
         });
-        const ratingResponse = await axios.post(`${URL}/app/_journey.php`, {
+        const ratingResponse = await httpClient.post(`${URL}/app/_journey.php`, {
             job: 'rateRider',
             requestId,
             token,
@@ -84,7 +89,7 @@ export const dropoffComplete = (requestId, stars, done) => async (dispatch) => {
         });
         console.log('Rating response', ratingResponse.data);
         console.log('dropoffComplete', data);
-        const allRequests = await axios.post(`${URL}/app/_pools.php`, {
+        const allRequests = await httpClient.post(`${URL}/app/_pools.php`, {
             job: 'getPoolBuddies',
             token,
             poolId
@@ -100,6 +105,7 @@ export const dropoffComplete = (requestId, stars, done) => async (dispatch) => {
             done();
         }
     } catch (error) {
+        console.log(error);
         console.log('Some Problem with server');  
         done();
     }
@@ -107,7 +113,7 @@ export const dropoffComplete = (requestId, stars, done) => async (dispatch) => {
 export const journeyCancelByDriver = (requestId, done) => async () => {
     const token = await AsyncStorage.getItem('userToken');
     try {
-        const { data } = await axios.post(`${URL}/app/_journey.php`, {
+        const { data } = await httpClient.post(`${URL}/app/_journey.php`, {
             job: 'cancelByDriver',
             token,
             requestId,

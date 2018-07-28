@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, SwitchNavigator, TabNavigator } from 'react-navigation';
 import SignInScreen from './auth/SignInScreen';
@@ -11,6 +12,19 @@ import JourneyScreen from './main/JourneyScreen';
 import ActivePool from './main/ActivePool';
 import { DARK } from '../config';
 import TrackDriver from './main/TrackDriver';
+
+import accountDark from '../../assets/icons/accountDark.png';
+import accountLight from '../../assets/icons/accountLight.png';
+
+import activePoolLight from '../../assets/icons/activePoolLight.png';
+
+import poolListLight from '../../assets/icons/poolListLight.png';
+
+import journeyDark from '../../assets/icons/journeyDark.png';
+import journeyLight from '../../assets/icons/journeyLight.png';
+
+import driverFeed from '../../assets/icons/steering.png';
+
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
 // goes here.
 // Implementation of HomeScreen, OtherScreen, SignInScreen, AuthLoadingScreen
@@ -23,7 +37,7 @@ const AppStack = TabNavigator({
           navigationOptions: {
             tabBarLabel: 'Pools',
             tabBarIcon: ({ tintColor }) => {
-            return <Icon name="list" size={20} color={tintColor} />;
+            return setImage('pools', tintColor);
             }
           },
           screen: PoolsScreen
@@ -32,7 +46,7 @@ const AppStack = TabNavigator({
     },
    driverscreen: {
      screen: new TabNavigator({
-       driverFeed: {
+       driverfeed: {
         screen: StackNavigator({
           driver: { screen: DriverScreen },
           pickLocation: { screen: PickLocation }
@@ -40,7 +54,7 @@ const AppStack = TabNavigator({
           navigationOptions: {
             tabBarLabel: 'Driver Feed',
             tabBarIcon: ({ tintColor }) => {
-            return <Icon name="rss-feed" size={20} color={tintColor} />;
+            return setImage('driverfeed', tintColor);
             }
           },
         }
@@ -52,7 +66,7 @@ const AppStack = TabNavigator({
             navigationOptions: {
               tabBarLabel: 'Journey',
               tabBarIcon: ({ tintColor }) => {
-              return <Icon name="directions-run" size={20} color={tintColor} />;
+              return setImage('journey', tintColor);
               }
             },
             screen: JourneyScreen
@@ -94,7 +108,7 @@ const AppStack = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Active Pool',
       tabBarIcon: ({ tintColor }) => {
-      return <Icon name="directions-car" size={20} color={tintColor} />;
+      return setImage('activepool', tintColor);
       }
     },
     screen: StackNavigator({
@@ -110,7 +124,7 @@ const AppStack = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Settings',
       tabBarIcon: ({ tintColor }) => {
-      return <Icon name="settings" size={20} color={tintColor} />;
+        return setImage('settings', tintColor);
       }
     },
      screen: SettingsScreen
@@ -132,15 +146,15 @@ const AppStack = TabNavigator({
           fontSize: 10,
           fontFamily: 'OpenSans-Light',
           fontWeight: '500',
-          margin: 0,
+          margin: 4,
           padding: 0,
         },
         indicatorStyle: {
          backgroundColor: 'white',
-         height: 68
+         height: 73
        },
          style: {
-           height: 60,
+           height: 65,
            borderTopWidth: 0,
            backgroundColor: DARK, // Makes Android tab bar white instead of standard blue
            }
@@ -167,3 +181,37 @@ export default SwitchNavigator(
     initialRouteName: 'AuthLoading',
   }
 );
+
+const setImage = (tabName, tintColor) => {
+  if (tintColor === 'white' | tintColor === '#b5b5b5') {
+    switch (tabName) { 
+      case 'settings':
+      return <Image source={accountLight} style={{ height: 20, width: 20 }} />;
+      case 'activepool': 
+      return <Image source={activePoolLight} style={{ height: 20, width: 20 }} />;
+      case 'pools': 
+      return <Image source={poolListLight} style={{ height: 20, width: 20 }} />;
+      case 'journey': 
+      return <Image source={journeyLight} style={{ height: 25, width: 25 }} />;
+      case 'driverfeed': 
+      return <Image source={driverFeed} style={{ height: 35, width: 35 }} />;
+      default:
+        return;
+    }
+  } else if (tintColor === DARK) {
+    switch (tabName) {
+      case 'settings':
+        return <Image source={accountDark} style={{ height: 35, width: 30 }} />;
+      case 'activepool': 
+        return <Image source={activePoolLight} style={{ height: 35, width: 30 }} />;
+      case 'pools': 
+      return <Image source={poolListLight} style={{ height: 45, width: 45 }} />;  
+      case 'journey': 
+      return <Image source={journeyDark} style={{ height: 35, width: 35 }} />;
+      case 'driverfeed': 
+      return <Image source={driverFeed} style={{ height: 45, width: 45 }} />;
+      default:
+        return;
+    }
+  }
+};
